@@ -4,7 +4,6 @@ $categories = Product::select('category')->distinct()->get();
 $products = Product::all();
 ?>
 
-
 <x-dashboard>
     <div class="w-full lg:ps-64">
         <div class="p-6 space-y-6">
@@ -33,9 +32,9 @@ $products = Product::all();
                                         <?php endforeach; ?>
                                     </div>
 
-                                    <!-- Add to Cart Button (Aligned to the Right) -->
+                                    <!-- Shopping Cart Button -->
                                     <div class="ml-auto">
-                                        <button type="button" class="m-1 ms-0 relative inline-flex justify-center items-center size-[46px] text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+                                        <button id="cart-button" type="button" class="m-1 ms-0 relative inline-flex justify-center items-center size-[46px] text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50">
                                             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="m5 11 4-7"></path>
                                                 <path d="m19 11-4-7"></path>
@@ -45,12 +44,48 @@ $products = Product::all();
                                                 <path d="M4.5 15.5h15"></path>
                                                 <path d="m15 11-1 9"></path>
                                             </svg>
-                                            <span class="flex absolute top-0 end-0 size-3 -mt-1.5 -me-1.5">
-                            <span class="animate-ping absolute inline-flex size-full rounded-full bg-red-400 opacity-75 dark:bg-red-600"></span>
-                            <span class="relative inline-flex rounded-full size-3 bg-red-500"></span>
-                        </span>
+                                            <span id="cart-count" class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">0</span>
                                         </button>
                                     </div>
+
+                                    <!-- Shopping Cart Modal -->
+                                    <div id="cart-modal" class="fixed inset-0 hidden z-[70]">
+                                        <!-- Background Overlay -->
+                                        <div id="cart-backdrop" class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
+
+                                        <!-- Sliding Panel -->
+                                        <div class="fixed inset-y-0 right-0 flex w-full max-w-md transition-transform transform translate-x-full" id="cart-panel">
+                                            <div class="pointer-events-auto w-full h-full bg-white shadow-xl flex flex-col">
+                                                <div class="px-4 py-6 sm:px-6 flex items-center justify-between border-b">
+                                                    <h2 class="text-lg font-medium text-gray-900">Shopping Cart</h2>
+                                                    <button id="close-cart" class="p-2 text-gray-400 hover:text-gray-500">
+                                                        <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="flex-1 overflow-y-auto p-4">
+                                                    <ul id="cart-items" role="list" class="-my-6 divide-y divide-gray-200">
+                                                        <!-- Cart items will be dynamically inserted here -->
+                                                    </ul>
+                                                </div>
+                                                <div class="border-t border-gray-200 px-4 py-6">
+                                                    <div class="flex justify-between text-base font-medium text-gray-900">
+                                                        <p>Subtotal</p>
+                                                        <p id="cart-total">0 MMK</p>
+                                                    </div>
+                                                    <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+                                                    <div class="mt-6">
+                                                        <a href="#" class="flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-white hover:bg-indigo-700">Checkout</a>
+                                                    </div>
+                                                    <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
+                                                        <p>or <button class="text-indigo-600 hover:text-indigo-500">Continue Shopping →</button></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </nav>
                             </div>
                         </div>
@@ -86,7 +121,7 @@ $products = Product::all();
     </div>
 
     <!-- Product Details Modal -->
-    <div id="product-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity">
+    <div id="product-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity">
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-3xl relative transform transition-all">
             <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <span class="sr-only">Close</span>
@@ -136,11 +171,20 @@ $products = Product::all();
         </div>
     </div>
 
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const categoryButtons = document.querySelectorAll(".category-btn");
             const productGrid = document.querySelector("#product-grid");
+            const cartButton = document.getElementById("cart-button");
+            const cartModal = document.getElementById("cart-modal");
+            const cartPanel = document.getElementById("cart-panel");
+            const closeCart = document.getElementById("close-cart");
+            const cartBackdrop = document.getElementById("cart-backdrop");
+            const cartItemsContainer = document.getElementById("cart-items");
+            const cartTotal = document.getElementById("cart-total");
+            const cartCount = document.getElementById("cart-count");
+
+            let cart = [];
 
             // Handle category filtering
             categoryButtons.forEach(button => {
@@ -153,15 +197,15 @@ $products = Product::all();
                             productGrid.innerHTML = "";
                             data.products.forEach(product => {
                                 let productHTML = `
-                                <div class="group block transform transition duration-300 hover:scale-105">
-                                    <img src="${product.product_image_url}" alt="${product.item_name}" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8">
-                                    <h3 class="mt-4 text-sm text-gray-700">${product.item_name}</h3>
-                                    <p class="text-sm text-gray-500">${product.brand}</p>
-                                    <p class="mt-1 text-lg font-medium text-gray-900">${new Intl.NumberFormat().format(product.unit_price_mmk)} MMK</p>
-                                    <button class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm view-details-btn" data-id="${product.id}">
-                                        View Details
-                                    </button>
-                                </div>`;
+                            <div class="group block transform transition duration-300 hover:scale-105">
+                                <img src="${product.product_image_url}" alt="${product.item_name}" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8">
+                                <h3 class="mt-4 text-sm text-gray-700">${product.item_name}</h3>
+                                <p class="text-sm text-gray-500">${product.brand}</p>
+                                <p class="mt-1 text-lg font-medium text-gray-900">${new Intl.NumberFormat().format(product.unit_price_mmk)} MMK</p>
+                                <button class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm view-details-btn" data-id="${product.id}">
+                                    View Details
+                                </button>
+                            </div>`;
                                 productGrid.innerHTML += productHTML;
                             });
 
@@ -170,6 +214,74 @@ $products = Product::all();
                         });
                 });
             });
+
+            // Initial attachment of event listeners
+            attachViewDetailsEventListeners();
+
+            // Handle category button active state
+            categoryButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => {
+                        btn.classList.remove("bg-white", "text-blue-600", "border-b-transparent");
+                        btn.classList.add("bg-gray-50", "text-gray-500", "hover:text-gray-700");
+                    });
+
+                    // Add active class to the clicked button
+                    this.classList.add("bg-white", "text-blue-600", "border-b-transparent");
+                    this.classList.remove("bg-gray-50", "text-gray-500", "hover:text-gray-700");
+                });
+            });
+
+            // Add to cart functionality
+            function addToCart(productId, quantity, product) {
+                const existingProduct = cart.find(item => item.id === productId);
+
+                if (existingProduct) {
+                    existingProduct.quantity += quantity;
+                } else {
+                    cart.push({
+                        id: productId,
+                        name: product.item_name,
+                        image: product.product_image_url,
+                        price: product.unit_price_mmk,
+                        quantity: quantity
+                    });
+                }
+
+                updateCartUI();
+            }
+
+            function updateCartUI() {
+                cartItemsContainer.innerHTML = "";
+                let total = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+
+                    const cartItemHTML = `
+                        <li class="flex py-6">
+                            <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                <img src="${item.image}" alt="${item.name}" class="h-full w-full object-cover object-center">
+                            </div>
+                            <div class="ml-4 flex flex-1 flex-col">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-900">${item.name}</h3>
+                                    <p class="mt-1 text-sm text-gray-500">${new Intl.NumberFormat().format(item.price)} MMK</p>
+                                </div>
+                                <div class="flex flex-1 items-end justify-between text-sm">
+                                    <p class="text-gray-500">Qty ${item.quantity}</p>
+                                    <p class="font-medium text-gray-900">${new Intl.NumberFormat().format(itemTotal)} MMK</p>
+                                </div>
+                            </div>
+                        </li>`;
+                    cartItemsContainer.innerHTML += cartItemHTML;
+                });
+
+                cartTotal.textContent = `${new Intl.NumberFormat().format(total)} MMK`;
+                cartCount.textContent = cart.length;
+            }
 
             function attachViewDetailsEventListeners() {
                 const modal = document.getElementById("product-modal");
@@ -181,6 +293,7 @@ $products = Product::all();
 
                 let currentProductId = null;
                 let maxStock = 1;
+                let currentProduct = null;
 
                 // Remove existing event listeners before adding new ones
                 increaseQtyBtn.replaceWith(increaseQtyBtn.cloneNode(true));
@@ -221,8 +334,9 @@ $products = Product::all();
                                 qtyInput.value = 1;
                                 qtyInput.setAttribute("max", maxStock);
 
-                                // Store product ID
+                                // Store product ID and product details
                                 currentProductId = data.product.id;
+                                currentProduct = data.product;
 
                                 // Show modal
                                 modal.classList.remove("hidden");
@@ -286,33 +400,23 @@ $products = Product::all();
                         return;
                     }
 
-                    console.log("Adding to cart:", {
-                        product_id: currentProductId,
-                        quantity: quantity
-                    });
-
-                    alert("Product added to cart!");
+                    addToCart(currentProductId, quantity, currentProduct);
                     modal.classList.add("hidden");
                 });
             }
 
-            // Initial attachment of event listeners
-            attachViewDetailsEventListeners();
-
-            // Handle category button active state
-            categoryButtons.forEach(button => {
-                button.addEventListener("click", function () {
-                    // Remove active class from all buttons
-                    categoryButtons.forEach(btn => {
-                        btn.classList.remove("bg-white", "text-blue-600", "border-b-transparent");
-                        btn.classList.add("bg-gray-50", "text-gray-500", "hover:text-gray-700");
-                    });
-
-                    // Add active class to the clicked button
-                    this.classList.add("bg-white", "text-blue-600", "border-b-transparent");
-                    this.classList.remove("bg-gray-50", "text-gray-500", "hover:text-gray-700");
-                });
+            cartButton.addEventListener("click", () => {
+                cartModal.classList.remove("hidden");
+                setTimeout(() => cartPanel.classList.remove("translate-x-full"), 50);
             });
+
+            function closeModal() {
+                cartPanel.classList.add("translate-x-full");
+                setTimeout(() => cartModal.classList.add("hidden"), 500);
+            }
+
+            closeCart.addEventListener("click", closeModal);
+            cartBackdrop.addEventListener("click", closeModal);
         });
     </script>
 </x-dashboard>
