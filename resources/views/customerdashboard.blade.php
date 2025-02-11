@@ -70,25 +70,85 @@ $products = Product::all();
                                                     </ul>
                                                 </div>
                                                 <div class="border-t border-gray-200 px-4 py-6">
-                                                    <div class="flex justify-between text-base font-medium text-gray-900">
-                                                        <p>Subtotal</p>
-                                                        <p id="cart-total">0 MMK</p>
+                                                        <div class="flex justify-between text-base font-medium text-gray-900">
+                                                            <p>Subtotal</p>
+                                                            <p id="cart-total">0 MMK</p>
+                                                        </div>
+                                                        <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+
+                                                        <!-- Add this data attribute where the points are displayed -->
+                                                        <span id="user-points" data-points="<?= Auth::user()->points; ?>" class="text-sm font-medium text-yellow-500 flex items-center gap-1">
+                                                            Your Points: <?= Auth::user()->points; ?>
+                                                        </span>
+
+                                                        <!-- Checkout Buttons -->
+                                                        <div class="mt-6 flex space-x-4">
+                                                            <a href="#" class="flex-1 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700">
+                                                                Checkout
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 ml-2">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                                                                </svg>
+                                                            </a>
+                                                            <button id="checkout-coins" class="flex-1 flex items-center justify-center rounded-md bg-yellow-500 px-3 py-2 text-white hover:bg-yellow-600">
+                                                                Checkout with coin
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 ml-2">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- JS to validate points -->
+                                                        <script>
+document.getElementById('checkout-coins').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    // Get user's available points from the span attribute
+    let userPoints = parseInt(document.getElementById('user-points').getAttribute('data-points')) || 0;
+
+    // Get latest cart total dynamically and convert to an integer
+    let cartTotalText = document.getElementById('cart-total').innerText.replace('MMK', '').trim();
+    let cartTotal = parseInt(cartTotalText.replace(/,/g, '')) || 0; // Remove commas if any
+
+    console.log("User Points:", userPoints);
+    console.log("Cart Subtotal:", cartTotal);
+
+    // Check conditions
+    if (cartTotal > userPoints || userPoints === 0 || cartTotal === 0) {
+        alert("Your points are not enough to checkout with coins.");
+    } else {
+        // Ask for confirmation
+        let confirmPurchase = confirm(`You are about to buy items worth ${cartTotal} MMK using points. Confirm purchase?`);
+        
+        if (confirmPurchase) {
+            // Deduct points from database via AJAX request
+            fetch('/deduct-points', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ pointsUsed: cartTotal })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Order placed successfully!");
+                    location.reload(); // Reload page to update points
+                } else {
+                    alert("Something went wrong. Please try again.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error processing order.");
+            });
+        }
+    }
+});
+
+                                                        </script>
                                                     </div>
-                                                    <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
-                                                    <div class="mt-6 flex space-x-4">
-                                                        <a href="#" class="flex-1 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700">
-                                                            Checkout
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 ml-2">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
-                                                            </svg>
-                                                        </a>
-                                                        <a href="#" class="flex-1 flex items-center justify-center rounded-md bg-yellow-500 px-3 py-2 text-white hover:bg-yellow-600">
-                                                            Checkout with coin
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 ml-2">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-                                                            </svg>
-                                                        </a>
-                                                    </div>
+
 
 
 
@@ -511,5 +571,8 @@ $products = Product::all();
             closeCart.addEventListener("click", closeModal);
             cartBackdrop.addEventListener("click", closeModal);
         });
+
+        
+
     </script>
 </x-dashboard>

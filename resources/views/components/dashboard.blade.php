@@ -70,15 +70,24 @@ $products = Product::all();
 
                 <!-- Dropdown -->
                 <div class="flex flex-col items-end mr-5">
-                    <span class="text-sm font-medium text-gray-800">Hey, <?= Auth::user()->partner_shops_name; ?>!</span>
-                    <span class="text-xs text-gray-500">
-
-                        @php date_default_timezone_set('Asia/Yangon');
-                             $today = date('l, F j, Y');
-                        @endphp
-                        {{ $today }}
+                    <span class="text-sm font-medium text-yellow-500 flex items-center gap-1">
+                        Your Points: <?= Auth::user()->points; ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-yellow-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                        </svg>
                     </span>
                 </div>
+
+
+    
+                </span>
+                    <span class="text-xs text-gray-500">
+                    </span>
+                </div>
+
+               
+
+
                 <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
 
                     <button id="hs-dropdown-account" type="button" class="size-[38px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-800 focus:outline-none disabled:opacity-50 disabled:pointer-events-none dark:text-white" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">

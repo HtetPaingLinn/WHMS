@@ -5,6 +5,10 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\PointsController;
+
+
+Route::post('/deduct-points', [PointsController::class, 'deductPoints']);
 
 Route::get('/', function () {
     return view('welcome');

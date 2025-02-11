@@ -21,6 +21,7 @@ protected $fillable = [
 'partner_shops_region',
 'contact_primary',
 'contact_secondary',
+'points'
 ];
 
 

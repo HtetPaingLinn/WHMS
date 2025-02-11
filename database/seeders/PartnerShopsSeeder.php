@@ -20,7 +20,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
-                'points' => null
+                'points' => 900000
             ],
             [
                 'partner_shops_name' => 'Code& Pixel',
