@@ -75,9 +75,23 @@ $products = Product::all();
                                                         <p id="cart-total">0 MMK</p>
                                                     </div>
                                                     <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
-                                                    <div class="mt-6">
-                                                        <a href="#" class="flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-white hover:bg-indigo-700">Checkout</a>
+                                                    <div class="mt-6 flex space-x-4">
+                                                        <a href="#" class="flex-1 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700">
+                                                            Checkout
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 ml-2">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                                                            </svg>
+                                                        </a>
+                                                        <a href="#" class="flex-1 flex items-center justify-center rounded-md bg-yellow-500 px-3 py-2 text-white hover:bg-yellow-600">
+                                                            Checkout with coin
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 ml-2">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                                                            </svg>
+                                                        </a>
                                                     </div>
+
+
+
                                                     <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                                                         <p>or <button class="text-indigo-600 hover:text-indigo-500">Continue Shopping →</button></p>
                                                     </div>
@@ -238,50 +252,126 @@ $products = Product::all();
                 const existingProduct = cart.find(item => item.id === productId);
 
                 if (existingProduct) {
-                    existingProduct.quantity += quantity;
+                    // Ensure the new quantity does not exceed the closing balance
+                    const newQuantity = existingProduct.quantity + quantity;
+                    if (newQuantity > product.latest_closing_balance) {
+                        alert(`You cannot add more than ${product.latest_closing_balance} items of this product.`);
+                        return;
+                    }
+                    existingProduct.quantity = newQuantity;
                 } else {
+                    // Ensure the initial quantity does not exceed the closing balance
+                    if (quantity > product.latest_closing_balance) {
+                        alert(`You cannot add more than ${product.latest_closing_balance} items of this product.`);
+                        return;
+                    }
                     cart.push({
                         id: productId,
                         name: product.item_name,
                         image: product.product_image_url,
                         price: product.unit_price_mmk,
-                        quantity: quantity
+                        quantity: quantity,
+                        maxStock: product.latest_closing_balance // Store the closing balance as max stock
                     });
                 }
 
                 updateCartUI();
             }
 
+
+            function attachCartQuantityEventListeners() {
+                const decreaseButtons = document.querySelectorAll(".cart-decrease-qty");
+                const increaseButtons = document.querySelectorAll(".cart-increase-qty");
+                const qtyInputs = document.querySelectorAll(".cart-qty");
+
+                decreaseButtons.forEach(button => {
+                    button.addEventListener("click", function () {
+                        const index = this.getAttribute("data-index");
+                        if (cart[index].quantity > 0) {
+                            cart[index].quantity -= 1;
+                            if (cart[index].quantity === 0) {
+                                cart.splice(index, 1); // Remove item if quantity is 0
+                            }
+                            updateCartUI();
+                        }
+                    });
+                });
+
+                increaseButtons.forEach(button => {
+                    button.addEventListener("click", function () {
+                        const index = this.getAttribute("data-index");
+                        if (cart[index].quantity < cart[index].maxStock) {
+                            cart[index].quantity += 1;
+                            updateCartUI();
+                        } else {
+                            alert(`You cannot order more than ${cart[index].maxStock} items of this product.`);
+                        }
+                    });
+                });
+
+                qtyInputs.forEach(input => {
+                    input.addEventListener("input", function () {
+                        const index = this.getAttribute("data-index");
+                        const value = parseInt(this.value);
+                        if (isNaN(value)) {
+                            this.value = 0;
+                        } else if (value < 0) {
+                            this.value = 0;
+                        } else if (value > cart[index].maxStock) {
+                            this.value = cart[index].maxStock;
+                            alert(`You cannot order more than ${cart[index].maxStock} items of this product.`);
+                        }
+                        cart[index].quantity = value;
+                        if (value === 0) {
+                            cart.splice(index, 1); // Remove item if quantity is 0
+                        }
+                        updateCartUI();
+                    });
+                });
+            }
+
             function updateCartUI() {
                 cartItemsContainer.innerHTML = "";
                 let total = 0;
 
-                cart.forEach(item => {
+                cart.forEach((item, index) => {
                     const itemTotal = item.price * item.quantity;
                     total += itemTotal;
 
                     const cartItemHTML = `
-                        <li class="flex py-6">
-                            <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                <img src="${item.image}" alt="${item.name}" class="h-full w-full object-cover object-center">
-                            </div>
-                            <div class="ml-4 flex flex-1 flex-col">
-                                <div>
-                                    <h3 class="text-sm font-medium text-gray-900">${item.name}</h3>
-                                    <p class="mt-1 text-sm text-gray-500">${new Intl.NumberFormat().format(item.price)} MMK</p>
-                                </div>
-                                <div class="flex flex-1 items-end justify-between text-sm">
-                                    <p class="text-gray-500">Qty ${item.quantity}</p>
-                                    <p class="font-medium text-gray-900">${new Intl.NumberFormat().format(itemTotal)} MMK</p>
-                                </div>
-                            </div>
-                        </li>`;
+            <li class="flex py-6">
+                <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                    <img src="${item.image}" alt="${item.name}" class="h-full w-full object-cover object-center">
+                </div>
+                <div class="ml-4 flex flex-1 flex-col">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-900">${item.name}</h3>
+                        <p class="mt-1 text-sm text-gray-500">${new Intl.NumberFormat().format(item.price)} MMK</p>
+                    </div>
+                    <div class="flex flex-1 items-end justify-between text-sm">
+                        <div class="flex items-center space-x-2">
+                            <button class="cart-decrease-qty px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg shadow" data-index="${index}">
+                                −
+                            </button>
+                            <input type="number" class="cart-qty w-12 text-center border border-gray-300 rounded-lg shadow" value="${item.quantity}" min="0" max="${item.maxStock}" data-index="${index}">
+                            <button class="cart-increase-qty px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg shadow" data-index="${index}">
+                                +
+                            </button>
+                        </div>
+                        <p class="font-medium text-gray-900">${new Intl.NumberFormat().format(itemTotal)} MMK</p>
+                    </div>
+                </div>
+            </li>`;
                     cartItemsContainer.innerHTML += cartItemHTML;
                 });
 
                 cartTotal.textContent = `${new Intl.NumberFormat().format(total)} MMK`;
                 cartCount.textContent = cart.length;
+
+                // Attach event listeners for quantity adjustment
+                attachCartQuantityEventListeners();
             }
+
 
             function attachViewDetailsEventListeners() {
                 const modal = document.getElementById("product-modal");
@@ -336,7 +426,10 @@ $products = Product::all();
 
                                 // Store product ID and product details
                                 currentProductId = data.product.id;
-                                currentProduct = data.product;
+                                currentProduct = {
+                                    ...data.product,
+                                    latest_closing_balance: maxStock // Include max stock in product details
+                                };
 
                                 // Show modal
                                 modal.classList.remove("hidden");
