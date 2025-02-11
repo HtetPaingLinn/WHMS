@@ -35,7 +35,7 @@
                             <td class="py-3 px-6 text-center">{{ number_format($sale->total_mmk, 2) }}</td>
                             <td class="py-3 px-6 text-center">{{ $sale->quantity }}</td>
                             <td class="py-3 px-6 text-center">
-                                <button type="button" onclick="showInvoiceDetails({{ $sale->id }})" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded-lg transition duration-300">
+                                <button type="button" onclick="showInvoiceDetails('{{ $sale->id }}')" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded-lg transition duration-300">
                                     View Details
                                 </button>
                             </td>
