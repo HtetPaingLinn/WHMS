@@ -159,4 +159,24 @@ class ComplaintController extends Controller
 
         return view('complaintHistory', compact('complaints'));
     }
+
+    public function destroy(Complaint $complaint)
+    {
+        // Check if complaint belongs to the authenticated user
+        if ($complaint->owner_id !== auth()->user()->partner_shops_id) {
+            return redirect()->back()->with('error', 'Unauthorized action.');
+        }
+
+        // Check if complaint is in pending status
+        if ($complaint->status !== 'pending') {
+            return redirect()->back()->with('error', 'Only pending complaints can be removed.');
+        }
+
+        try {
+            $complaint->delete();
+            return redirect()->back()->with('success', 'Complaint removed successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to remove complaint. Please try again.');
+        }
+    }
 }

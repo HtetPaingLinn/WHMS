@@ -82,3 +82,7 @@ Route::get('/products/details/{id}', function ($id) {
 
 Route::post('/customer/checkout', [CheckoutController::class, 'checkout'])->name('customer.checkout');
 
+Route::put('/sales/{sale}/cancel', [OrderHistoryController::class, 'cancelSale'])->name('sales.cancel');
+
+Route::delete('/complaints/{complaint}', [ComplaintController::class, 'destroy'])->name('complaints.destroy');
+

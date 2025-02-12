@@ -7,6 +7,8 @@ use App\Models\SalesInvoice;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\StockRecord;
 
 class OrderHistoryController extends Controller
 {
@@ -126,5 +128,67 @@ class OrderHistoryController extends Controller
         $complaint->delete();
 
         return response()->json(['message' => 'Complaint deleted successfully']);
+    }
+
+    public function cancelSale(SalesInvoice $sale)
+    {
+        // Check if sale can be cancelled
+        if ($sale->delivered) {
+            return redirect()->back()->with('error', 'Cannot cancel delivered orders.');
+        }
+
+        // Check if complaint exists
+        if (Complaint::where('invoice_no', $sale->invoice_no)
+            ->where('product_id', $sale->product_id)
+            ->exists()) {
+            return redirect()->back()->with('error', 'Cannot cancel order with existing complaint.');
+        }
+
+        DB::beginTransaction();
+        try {
+            // Get the latest stock record
+            $latestStock = StockRecord::where('product_id', $sale->product_id)
+                ->latest('record_date')
+                ->first();
+
+            // Create new stock record or update existing one for today
+            $today = now()->toDateString();
+            $stockRecord = StockRecord::where('product_id', $sale->product_id)
+                ->where('record_date', $today)
+                ->first();
+
+            if ($stockRecord) {
+                // Update existing record
+                $stockRecord->received += $sale->quantity;
+                $stockRecord->closing_balance += $sale->quantity;
+                $stockRecord->save();
+            } else {
+                // Create new record
+                StockRecord::create([
+                    'record_date' => $today,
+                    'product_id' => $sale->product_id,
+                    'warehouse_branch' => $latestStock->warehouse_branch,
+                    'opening_balance' => $latestStock->closing_balance,
+                    'received' => $sale->quantity,
+                    'dispatched' => 0,
+                    'closing_balance' => $latestStock->closing_balance + $sale->quantity,
+                    'system_users_id' => 1, // You might want to adjust this
+                ]);
+            }
+
+            // Delete any associated complaints
+            Complaint::where('invoice_no', $sale->invoice_no)
+                ->where('product_id', $sale->product_id)
+                ->delete();
+
+            // Delete the sales invoice record
+            $sale->delete();
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Order cancelled and removed successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Failed to cancel order. Please try again.');
+        }
     }
 }

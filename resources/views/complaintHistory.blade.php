@@ -19,6 +19,7 @@
                             <th class="py-3 px-4 text-left">Issue Type</th>
                             <th class="py-3 px-4 text-left">Status</th>
                             <th class="py-3 px-4 text-left">Admin Response</th>
+                            <th class="py-3 px-4 text-left">Actions</th>
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
@@ -57,6 +58,19 @@
                                         {{ $complaint->admin_response }}
                                     @else
                                         <span class="text-gray-400">No response yet</span>
+                                    @endif
+                                </td>
+                                <td class="py-3 px-4">
+                                    @if($complaint->status === 'pending')
+                                        <form action="{{ route('complaints.destroy', $complaint->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                onclick="return confirm('Are you sure you want to remove this complaint?')"
+                                                class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-1 px-3 rounded-lg transition duration-300">
+                                                Remove
+                                            </button>
+                                        </form>
                                     @endif
                                 </td>
                             </tr>
