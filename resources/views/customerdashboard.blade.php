@@ -89,10 +89,10 @@ $products = Product::all();
 
                                                     <div class="mt-6 flex space-x-4">
                                                         <button id="checkout-currency" class="flex-1 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700">
-                                                            Checkout
+                                                            Checkout with MMK
                                                         </button>
                                                         <button id="checkout-coins" class="flex-1 flex items-center justify-center rounded-md bg-yellow-500 px-3 py-2 text-white hover:bg-yellow-600">
-                                                            Checkout with coin
+                                                            Checkout with your points
                                                         </button>
                                                     </div>
 
@@ -120,7 +120,7 @@ $products = Product::all();
 
                                                         // Validation
                                                         if (cartTotal === 0 || userPoints < cartTotal) {
-                                                            alert("Your points are not enough to checkout with coins.");
+                                                            alert("Your points are not enough to checkout with points.");
                                                             return;
                                                         }
 
