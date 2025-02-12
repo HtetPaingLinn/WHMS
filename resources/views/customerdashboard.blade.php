@@ -583,56 +583,57 @@ $products = Product::all();
 
     </script>
 
-<script>
-document.getElementById('checkout-currency').addEventListener('click', function (event) {
-    event.preventDefault();
+<!-- Checkout with MMK for point increase -->
+    <script>
+    document.getElementById('checkout-currency').addEventListener('click', function (event) {
+        event.preventDefault();
 
-    // Get partner shop ID
-    let partnerShopId = document.getElementById('user-points').getAttribute('data-partner-id');
+        // Get partner shop ID
+        let partnerShopId = document.getElementById('user-points').getAttribute('data-partner-id');
 
-    // Get cart total
-    let cartTotalText = document.getElementById('cart-total').innerText.replace('MMK', '').trim();
-    let cartTotal = parseInt(cartTotalText.replace(/,/g, '')) || 0;
+        // Get cart total
+        let cartTotalText = document.getElementById('cart-total').innerText.replace('MMK', '').trim();
+        let cartTotal = parseInt(cartTotalText.replace(/,/g, '')) || 0;
 
-    console.log("Cart Total:", cartTotal);
+        console.log("Cart Total:", cartTotal);
 
-    if (cartTotal === 0) {
-        alert("Your cart is empty!");
-        return;
-    }
+        if (cartTotal === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
 
-    // Calculate earned points (1 point per 100 MMK)
-    let earnedPoints = Math.floor(cartTotal / 100);
+        // Calculate earned points (1 point per 100 MMK)
+        let earnedPoints = Math.floor(cartTotal / 100);
 
-    // Confirm checkout
-    if (confirm(`You are about to checkout with ${cartTotal} MMK. You will earn ${earnedPoints} points. Confirm?`)) {
-        fetch('/increase-points', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                cart_total: cartTotal,
-                partner_shops_id: partnerShopId
+        // Confirm checkout
+        if (confirm(`You are about to checkout with ${cartTotal} MMK. You will earn ${earnedPoints} points. Confirm?`)) {
+            fetch('/increase-points', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    cart_total: cartTotal,
+                    partner_shops_id: partnerShopId
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(`Checkout successful! You earned ${earnedPoints} points.`);
-                location.reload(); // Reload to update points
-            } else {
-                alert("Error processing checkout: " + data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("An error occurred. Please try again.");
-        });
-    }
-});
-</script>
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Checkout successful! You earned ${earnedPoints} points.`);
+                    location.reload(); // Reload to update points
+                } else {
+                    alert("Error processing checkout: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again.");
+            });
+        }
+    });
+    </script>
 
 
 </x-dashboard>
