@@ -77,80 +77,82 @@ $products = Product::all();
                                                         <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 
                                                         <!-- Add this data attribute where the points are displayed -->
-<!-- Display User Points -->
-<span id="user-points" 
-      data-points="<?= Auth::user()->points; ?>" 
-      data-partner-id="<?= Auth::user()->partner_shops_id; ?>" 
-      class="text-sm font-medium text-yellow-500 flex items-center gap-1">
-    Your Points: <?= Auth::user()->points; ?>
-</span>
+                                                    <!-- Display User Points -->
+                                                    <span id="user-points" 
+                                                        data-points="<?= Auth::user()->points; ?>" 
+                                                        data-partner-id="<?= Auth::user()->partner_shops_id; ?>" 
+                                                        class="text-sm font-medium text-yellow-500 flex items-center gap-1">
+                                                        Your Points: <?= Auth::user()->points; ?>
+                                                    </span>
 
-<!-- Checkout Buttons -->
-<div class="mt-6 flex space-x-4">
-    <a href="#" class="flex-1 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700">
-        Checkout
-    </a>
-    <button id="checkout-coins" class="flex-1 flex items-center justify-center rounded-md bg-yellow-500 px-3 py-2 text-white hover:bg-yellow-600">
-        Checkout with coin
-    </button>
-</div>
+                                                    <!-- Checkout Buttons -->
 
-<!-- CSRF Token Meta -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
+                                                    <div class="mt-6 flex space-x-4">
+                                                        <button id="checkout-currency" class="flex-1 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700">
+                                                            Checkout
+                                                        </button>
+                                                        <button id="checkout-coins" class="flex-1 flex items-center justify-center rounded-md bg-yellow-500 px-3 py-2 text-white hover:bg-yellow-600">
+                                                            Checkout with coin
+                                                        </button>
+                                                    </div>
 
-<!-- JavaScript -->
-<script>
-document.getElementById('checkout-coins').addEventListener('click', function (event) {
-    event.preventDefault();
 
-    // Get user's available points
-    let userPoints = parseInt(document.getElementById('user-points').getAttribute('data-points')) || 0;
-    
-    // Get partner shop ID
-    let partnerShopId = document.getElementById('user-points').getAttribute('data-partner-id');
+                                                    <!-- CSRF Token Meta -->
+                                                    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    // Get cart total
-    let cartTotalText = document.getElementById('cart-total').innerText.replace('MMK', '').trim();
-    let cartTotal = parseInt(cartTotalText.replace(/,/g, '')) || 0;
+                                                    <!-- JavaScript -->
+                                                    <script>
+                                                    document.getElementById('checkout-coins').addEventListener('click', function (event) {
+                                                        event.preventDefault();
 
-    console.log("User Points:", userPoints);
-    console.log("Cart Total:", cartTotal);
+                                                        // Get user's available points
+                                                        let userPoints = parseInt(document.getElementById('user-points').getAttribute('data-points')) || 0;
+                                                        
+                                                        // Get partner shop ID
+                                                        let partnerShopId = document.getElementById('user-points').getAttribute('data-partner-id');
 
-    // Validation
-    if (cartTotal === 0 || userPoints < cartTotal) {
-        alert("Your points are not enough to checkout with coins.");
-        return;
-    }
+                                                        // Get cart total
+                                                        let cartTotalText = document.getElementById('cart-total').innerText.replace('MMK', '').trim();
+                                                        let cartTotal = parseInt(cartTotalText.replace(/,/g, '')) || 0;
 
-    // Confirm Purchase
-    if (confirm(`You are about to purchase items worth ${cartTotal} MMK using your points. Confirm?`)) {
-        fetch('/deduct-points', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                points_used: cartTotal,
-                partner_shops_id: partnerShopId
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Order successful! Your points have been deducted.");
-                location.reload(); // Reload to update displayed points
-            } else {
-                alert("Error processing order: " + data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("An error occurred. Please try again.");
-        });
-    }
-});
-</script>
+                                                        console.log("User Points:", userPoints);
+                                                        console.log("Cart Total:", cartTotal);
+
+                                                        // Validation
+                                                        if (cartTotal === 0 || userPoints < cartTotal) {
+                                                            alert("Your points are not enough to checkout with coins.");
+                                                            return;
+                                                        }
+
+                                                        // Confirm Purchase
+                                                        if (confirm(`You are about to purchase items worth ${cartTotal} MMK using your points. Confirm?`)) {
+                                                            fetch('/deduct-points', {
+                                                                method: 'POST',
+                                                                headers: {
+                                                                    'Content-Type': 'application/json',
+                                                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                                                },
+                                                                body: JSON.stringify({
+                                                                    points_used: cartTotal,
+                                                                    partner_shops_id: partnerShopId
+                                                                })
+                                                            })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    alert("Order successful! Your points have been deducted.");
+                                                                    location.reload(); // Reload to update displayed points
+                                                                } else {
+                                                                    alert("Error processing order: " + data.message);
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error("Error:", error);
+                                                                alert("An error occurred. Please try again.");
+                                                            });
+                                                        }
+                                                    });
+                                                    </script>
 
                                                     </div>
 
@@ -580,4 +582,57 @@ document.getElementById('checkout-coins').addEventListener('click', function (ev
         
 
     </script>
+
+<script>
+document.getElementById('checkout-currency').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    // Get partner shop ID
+    let partnerShopId = document.getElementById('user-points').getAttribute('data-partner-id');
+
+    // Get cart total
+    let cartTotalText = document.getElementById('cart-total').innerText.replace('MMK', '').trim();
+    let cartTotal = parseInt(cartTotalText.replace(/,/g, '')) || 0;
+
+    console.log("Cart Total:", cartTotal);
+
+    if (cartTotal === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    // Calculate earned points (1 point per 100 MMK)
+    let earnedPoints = Math.floor(cartTotal / 100);
+
+    // Confirm checkout
+    if (confirm(`You are about to checkout with ${cartTotal} MMK. You will earn ${earnedPoints} points. Confirm?`)) {
+        fetch('/increase-points', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                cart_total: cartTotal,
+                partner_shops_id: partnerShopId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Checkout successful! You earned ${earnedPoints} points.`);
+                location.reload(); // Reload to update points
+            } else {
+                alert("Error processing checkout: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+        });
+    }
+});
+</script>
+
+
 </x-dashboard>

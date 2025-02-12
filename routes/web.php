@@ -9,6 +9,8 @@ use App\Http\Controllers\PointsController;
 
 
 Route::post('/deduct-points', [PointsController::class, 'deductPoints']);
+Route::post('/increase-points', [PointsController::class, 'increasePoints'])->middleware('auth');
+
 
 Route::get('/', function () {
     return view('welcome');

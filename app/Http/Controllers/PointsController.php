@@ -45,4 +45,39 @@ class PointsController extends Controller
             'remaining_points' => $remainingPoints
         ]);
     }
+
+        public function increasePoints(Request $request)
+    {
+        // Validate request
+        $request->validate([
+            'cart_total' => 'required|integer|min:100',
+            'partner_shops_id' => 'required|integer|exists:partner_shops,partner_shops_id'
+        ]);
+
+        // Fetch the authenticated partner shop
+        $partnerShop = Auth::user();
+
+        if (!$partnerShop) {
+            return response()->json(['success' => false, 'message' => 'Partner shop not found.']);
+        }
+
+        $cartTotal = $request->input('cart_total');
+
+        // Calculate earned points (1 point per 100 MMK)
+        $earnedPoints = floor($cartTotal / 100);
+
+        // Increase points in database
+        $newPoints = $partnerShop->points + $earnedPoints;
+
+        DB::table('partner_shops')
+            ->where('partner_shops_id', $partnerShop->partner_shops_id)
+            ->update(['points' => $newPoints]);
+
+        return response()->json([
+            'success' => true,
+            'earned_points' => $earnedPoints,
+            'total_points' => $newPoints
+        ]);
+    }
+
 }
