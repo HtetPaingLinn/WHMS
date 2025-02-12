@@ -17,8 +17,16 @@ class SalesInvoice extends Model
         'cash_back_mmk',
         'quantity',
         'total_mmk',
+        'delivered',
+        'payment',
+        'completed',
         'remarks',
     ];
+
+    public static function create(array $array)
+    {
+
+    }
 
     public function partnerShop()
     {

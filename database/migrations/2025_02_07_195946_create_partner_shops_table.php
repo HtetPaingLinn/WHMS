@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('partner_shops_region', 20)->nullable();
             $table->string('contact_primary', 30)->nullable();
             $table->string('contact_secondary', 30)->nullable();
+            $table->decimal('points', 15, 2)->default(0);
             $table->timestamps();
         });
     }

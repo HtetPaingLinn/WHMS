@@ -30,6 +30,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'Cloud Connectors',
@@ -40,6 +41,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'The Data Den',
@@ -50,6 +52,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'Innovate IT',
@@ -60,6 +63,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'Tech Fusion Store',
@@ -70,6 +74,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'Hardware Haven',
@@ -80,6 +85,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'Binary Boutique',
@@ -90,6 +96,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'Circuit City Pro',
@@ -100,6 +107,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'GigaWorld Electronics',
@@ -110,6 +118,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'Mega Tech Mart',
@@ -120,6 +129,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'CyberCore',
@@ -130,6 +140,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'PC Planet',
@@ -140,6 +151,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'Byte Bazaar',
@@ -150,6 +162,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'Future Bytes',
@@ -160,6 +173,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'IT Essentials Co.',
@@ -170,6 +184,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'SmartEdge Solutions',
@@ -180,6 +195,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'DigitalHub',
@@ -190,6 +206,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'NextGen Gadgets',
@@ -200,6 +217,7 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
             [
                 'partner_shops_name' => 'TechNest',
@@ -210,7 +228,20 @@ class PartnerShopsSeeder extends Seeder
                 'partner_shops_region' => 'Yangon',
                 'contact_primary' => null,
                 'contact_secondary' => null,
+
             ],
+
+            [
+                'partner_shops_name' => 'TechNest',
+                'partner_shops_email' => 'technest@example.com',
+                'partner_shops_password' => Hash::make('pwd1234'),
+                'partner_shops_address' => null,
+                'partner_shops_township' => 'Ahlone',
+                'partner_shops_region' => 'Yangon',
+                'contact_primary' => null,
+                'contact_secondary' => null,
+
+            ]
         ];
 
         foreach ($partnerShops as $shop) {

@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\PointsController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -25,7 +29,28 @@ Route::middleware(['auth'])->group(function () {
         return view('customerhistory');
     });
 
+    // Admin Complaint Form handling route later add middleware and authorization
+    Route::get('/adminComplaint', [ComplaintController::class, 'index'])->name('admin.complaints');
+
+    Route::post('/complaints/{complaint}/assign-service-center', [ComplaintController::class, 'assignServiceCenter'])
+        ->name('complaints.assign-service-center');
+
+    Route::post('/complaints/{complaint}/assign-warehouse', [ComplaintController::class, 'assignWarehouse'])
+        ->name('complaints.assign-warehouse');
+
+    Route::put('/complaints/{complaint}', [ComplaintController::class, 'update'])
+        ->name('complaints.update');
+
+
+    //  Complaint History for client side
+    Route::get('/complaintHistory', [ComplaintController::class, 'complaintHistory'])->name('complaintHistory');
+
+    Route::get('/orderhistory', [OrderHistoryController::class, 'index'])->name('orderhistory.index');
+    Route::post('/complaints', [OrderHistoryController::class, 'store'])->name('complaints.store');
+
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+
 });
 
 Route::get('/products/filter', function (Request $request) {
@@ -53,3 +78,7 @@ Route::get('/products/details/{id}', function ($id) {
         'latest_closing_balance' => $latestStockRecord ? $latestStockRecord->closing_balance : 'N/A'
     ]);
 });
+
+
+Route::post('/customer/checkout', [CheckoutController::class, 'checkout'])->name('customer.checkout');
+

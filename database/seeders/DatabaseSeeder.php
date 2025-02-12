@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             ServiceCentersSeeder::class,
             StockRecordsSeeder::class,
-            SalesInvoiceSeeder::class,
 
         ]);
     }

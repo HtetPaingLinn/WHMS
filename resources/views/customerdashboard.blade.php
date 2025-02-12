@@ -32,6 +32,15 @@ $products = Product::all();
                                         <?php endforeach; ?>
                                     </div>
 
+                                    <div class="flex flex-col items-end mr-5">
+                    <span class="text-sm font-medium text-yellow-500 flex items-center gap-1">
+                        Your Points: <?= Auth::user()->points; ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-yellow-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                        </svg>
+                    </span>
+                </div>
+
                                     <!-- Shopping Cart Button -->
                                     <div class="ml-auto">
                                         <button id="cart-button" type="button" class="m-1 ms-0 relative inline-flex justify-center items-center size-[46px] text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50">
@@ -75,63 +84,67 @@ $products = Product::all();
                                                         <p id="cart-total">0 MMK</p>
                                                     </div>
                                                     <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+
+                                                    <!-- Add this data attribute where the points are displayed -->
+                                                    <span id="user-points" data-points="<?= Auth::user()->points; ?>" class="text-sm font-medium text-yellow-500 flex items-center gap-1">
+                                                            Your Points: <?= Auth::user()->points; ?>
+                                                        </span>
+
+                                                    <!-- Checkout Buttons -->
                                                     <div class="mt-6 flex space-x-4">
-                                                        <a href="#" class="flex-1 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700">
+                                                        <button id="checkout-btn" class="flex-1 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700">
                                                             Checkout
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 ml-2">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
                                                             </svg>
-                                                        </a>
-                                                        <a href="#" class="flex-1 flex items-center justify-center rounded-md bg-yellow-500 px-3 py-2 text-white hover:bg-yellow-600">
+                                                        </button>
+                                                        <button id="checkout-coins" class="flex-1 flex items-center justify-center rounded-md bg-yellow-500 px-3 py-2 text-white hover:bg-yellow-600">
                                                             Checkout with coin
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 ml-2">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
                                                             </svg>
-                                                        </a>
+                                                        </button>
                                                     </div>
 
 
-
-                                                    <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
-                                                        <p>or <button class="text-indigo-600 hover:text-indigo-500">Continue Shopping →</button></p>
-                                                    </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
 
-                                </nav>
-                            </div>
-                        </div>
                     </nav>
-
-                </header>
-
-                <div class="bg-white">
-                    <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-                        <h2 class="sr-only">Products</h2>
-
-                        <div id="product-grid" class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                            <?php foreach ($products as $product): ?>
-                            <div class="group block transform transition duration-300 hover:scale-105">
-                                <img src="<?= htmlspecialchars($product->getImageUrlAttribute()) ?>" alt="<?= htmlspecialchars($product->item_name) ?>" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8">
-                                <h3 class="mt-4 text-sm text-gray-700"><?= htmlspecialchars($product->item_name) ?></h3>
-                                <p class="text-sm text-gray-500"><?= htmlspecialchars($product->brand) ?></p>
-                                <p class="mt-1 text-lg font-medium text-gray-900"><?= number_format($product->unit_price_mmk) ?> MMK</p>
-                                <!-- View Details Button -->
-                                <button class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm view-details-btn"
-                                        data-id="<?= $product->id ?>">
-                                    View Details
-                                </button>
-                            </div>
-                            <?php endforeach; ?>
-
-                        </div>
-
-                    </div>
-                </div>
             </div>
         </div>
+        </nav>
+
+        </header>
+
+        <div class="bg-white">
+            <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+                <h2 class="sr-only">Products</h2>
+
+                <div id="product-grid" class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                    <?php foreach ($products as $product): ?>
+                    <div class="group block transform transition duration-300 hover:scale-105">
+                        <img src="<?= htmlspecialchars($product->getImageUrlAttribute()) ?>" alt="<?= htmlspecialchars($product->item_name) ?>" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8">
+                        <h3 class="mt-4 text-sm text-gray-700"><?= htmlspecialchars($product->item_name) ?></h3>
+                        <p class="text-sm text-gray-500"><?= htmlspecialchars($product->brand) ?></p>
+                        <p class="mt-1 text-lg font-medium text-gray-900"><?= number_format($product->unit_price_mmk) ?> MMK</p>
+                        <!-- View Details Button -->
+                        <button class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm view-details-btn"
+                                data-id="<?= $product->id ?>">
+                            View Details
+                        </button>
+                    </div>
+                    <?php endforeach; ?>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
     </div>
 
     <!-- Product Details Modal -->
@@ -186,7 +199,9 @@ $products = Product::all();
     </div>
 
     <script>
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         document.addEventListener("DOMContentLoaded", function () {
+
             const categoryButtons = document.querySelectorAll(".category-btn");
             const productGrid = document.querySelector("#product-grid");
             const cartButton = document.getElementById("cart-button");
@@ -199,6 +214,7 @@ $products = Product::all();
             const cartCount = document.getElementById("cart-count");
 
             let cart = [];
+
 
             // Handle category filtering
             categoryButtons.forEach(button => {
@@ -510,6 +526,81 @@ $products = Product::all();
 
             closeCart.addEventListener("click", closeModal);
             cartBackdrop.addEventListener("click", closeModal);
-        });
+
+
+                function checkUserPoints(totalAmount) {
+                    const userPoints = parseInt(document.getElementById('user-points').getAttribute('data-points'));
+                    return userPoints >= totalAmount;
+                }
+
+                // Add checkout event listeners
+document.getElementById('checkout-btn').addEventListener('click', function() {
+    processCheckout(false);
+});
+
+document.getElementById('checkout-coins').addEventListener('click', function() {
+    const total = calculateTotal();
+    if (!checkUserPoints(total)) {
+        alert('Insufficient points for this purchase');
+        return;
+    }
+    processCheckout(true);
+});
+
+function calculateTotal() {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+}
+
+function processCheckout(usePoints) {
+    if (cart.length === 0) {
+        alert('Your cart is empty');
+        return;
+    }
+
+    fetch('/customer/checkout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({
+            cart: cart,
+            use_points: usePoints
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            let message = 'Order placed successfully!';
+            if (data.points_earned > 0) {
+                message += `\nYou earned ${data.points_earned} points!`;
+            }
+            alert(message);
+            cart = [];
+            updateCartUI();
+            closeModal();
+            
+            // Update displayed points
+            const pointsDisplay = document.getElementById('user-points');
+            const currentPoints = parseInt(pointsDisplay.getAttribute('data-points'));
+            const newPoints = usePoints ? 
+                currentPoints - calculateTotal() : 
+                currentPoints + (data.points_earned || 0);
+            
+            pointsDisplay.setAttribute('data-points', newPoints);
+            pointsDisplay.textContent = `Your Points: ${newPoints}`;
+        } else {
+            alert(data.message || 'Error processing order');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error processing order');
+    });
+}
+            });
+
+
     </script>
 </x-dashboard>
