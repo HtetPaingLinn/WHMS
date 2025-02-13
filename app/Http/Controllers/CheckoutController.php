@@ -82,6 +82,34 @@ class CheckoutController extends Controller
                     $newStockRecord->save();
                 }
 
+                if ($usePoints) {
+                    $totalAmount = collect($cart)->sum(function($item) {
+                        return $item['price'] * $item['quantity'];
+                    });
+                    
+                    $user = Auth::user();
+                    
+                    // Check if user has enough points
+                    if ($user->points < $totalAmount) {
+                        DB::rollBack();
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Insufficient points for this purchase.'
+                        ], 400);
+                    }
+                    
+                    // Deduct points and set payment status
+                    $user->points -= $totalAmount;
+                    $user->save();
+                    
+                    // Set payment status based on points usage
+                    $paymentStatus = 'Paid';
+                    $successMessage = "Order placed successfully using points.";
+                } else {
+                    $paymentStatus = 'Pending';
+                    $successMessage = "Order placed successfully. Payment pending.";
+                }
+
                 $salesInvoice = new SalesInvoice([
                     'sale_date' => now()->toDateString(),
                     'invoice_no' => $invoiceNo,
@@ -91,7 +119,7 @@ class CheckoutController extends Controller
                     'quantity' => $item['quantity'],
                     'total_mmk' => $item['price'] * $item['quantity'],
                     'delivered' => 0,
-                    'payment' => $usePoints ? 'Paid' : 'Pending',
+                    'payment' => $paymentStatus,
                     'completed' => 0,
                     'remarks' => null,
                 ]);
@@ -102,18 +130,12 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            if ($usePoints) {
-                $totalAmount = collect($cart)->sum(function($item) {
-                    return $item['price'] * $item['quantity'];
-                });
-                
-                $user = Auth::user();
-                $user->points -= $totalAmount;
-                $user->save();
-            }
-
             DB::commit();
-            return response()->json(['success' => true, 'invoice_no' => $invoiceNo]);
+            return response()->json([
+                'success' => true, 
+                'invoice_no' => $invoiceNo,
+                'message' => $successMessage
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Checkout error:', [

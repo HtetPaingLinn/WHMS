@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\StockRecord;
+use App\Models\PartnerShop;
 
 class OrderHistoryController extends Controller
 {
@@ -133,7 +134,7 @@ class OrderHistoryController extends Controller
     public function cancelSale(SalesInvoice $sale)
     {
         // Check if sale can be cancelled
-        if ($sale->delivered) {
+        if ($sale->delivered == 1) {
             return redirect()->back()->with('error', 'Cannot cancel delivered orders.');
         }
 
@@ -172,8 +173,20 @@ class OrderHistoryController extends Controller
                     'received' => $sale->quantity,
                     'dispatched' => 0,
                     'closing_balance' => $latestStock->closing_balance + $sale->quantity,
-                    'system_users_id' => 1, // You might want to adjust this
+                    'system_users_id' => 1,
                 ]);
+            }
+
+            // If the order was paid, refund points
+            if ($sale->payment === 'Paid') {
+                $partnerShop = PartnerShop::find($sale->partner_shops_id);
+                $pointsToAdd = $sale->total_mmk; // Return exact amount as points
+                $partnerShop->points += $pointsToAdd;
+                $partnerShop->save();
+                
+                $successMessage = "Order cancelled and {$pointsToAdd} points have been refunded to your account.";
+            } else {
+                $successMessage = "Order cancelled successfully.";
             }
 
             // Delete any associated complaints
@@ -185,7 +198,7 @@ class OrderHistoryController extends Controller
             $sale->delete();
 
             DB::commit();
-            return redirect()->back()->with('success', 'Order cancelled and removed successfully.');
+            return redirect()->back()->with('success', $successMessage);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to cancel order. Please try again.');

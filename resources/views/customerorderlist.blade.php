@@ -48,109 +48,213 @@
             }, 5000);
         </script>
     @endif
-    <div class="bg-white rounded-lg shadow-lg p-6 w-full lg:ps-72">
-        <!-- Pending Orders Section -->
-        <h2 class="text-4xl font-bold text-gray-900 mb-6 tracking-wide">📊 Pending Orders</h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border rounded-lg shadow-md">
-                <thead>
-                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6 text-center">Invoice No</th>
-                        <th class="py-3 px-6 text-center">Sale Date</th>
-                        <th class="py-3 px-6 text-center">Product</th>
-                        <th class="py-3 px-6 text-center">Serial No</th>
-                        <th class="py-3 px-6 text-center">Total (MMK)</th>
-                        <th class="py-3 px-6 text-center">Quantity</th>
-                        <th class="py-3 px-6 text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-600 text-sm">
-                    @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
-                        ->where('delivered', 0)
-                        ->with('product')
-                        ->orderBy('sale_date', 'desc')
-                        ->get() as $sale)
-                        <tr class="border-b border-gray-200">
-                            <td class="py-3 px-6 text-center">{{ $sale->invoice_no }}</td>
-                            <td class="py-3 px-6 text-center">{{ $sale->sale_date }}</td>
-                            <td class="py-3 px-6 text-center">
-                                {{ $sale->product->item_name ?? 'N/A' }}
-                                <span class="text-gray-500 text-xs">{{ $sale->product->brand ?? '' }}</span>
-                            </td>
-                            <td class="py-3 px-6 text-center">{{ $sale->product->product_serial_number ?? 'N/A' }}</td>
-                            <td class="py-3 px-6 text-center">{{ number_format($sale->total_mmk, 2) }}</td>
-                            <td class="py-3 px-6 text-center">{{ $sale->quantity }}</td>
-                            <td class="py-3 px-6 text-center">
-                                <form action="{{ route('sales.cancel', $sale->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" 
-                                            onclick="return confirm('Are you sure you want to cancel this order?')"
-                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded-lg transition duration-300">
-                                        Cancel Order
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+    <div class="bg-gray-50 min-h-screen lg:ps-72">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Order Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Orders Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-50 text-blue-600">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h2 class="text-sm font-medium text-gray-600">Pending Orders</h2>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {{ App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
+                                    ->where('delivered', 0)
+                                    ->count() }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Completed Orders Section -->
-        <h2 class="text-4xl font-bold text-gray-900 my-6 tracking-wide">📦 Completed Orders</h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border rounded-lg shadow-md">
-                <thead>
-                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6 text-center">Invoice No</th>
-                        <th class="py-3 px-6 text-center">Sale Date</th>
-                        <th class="py-3 px-6 text-center">Product</th>
-                        <th class="py-3 px-6 text-center">Serial No</th>
-                        <th class="py-3 px-6 text-center">Total (MMK)</th>
-                        <th class="py-3 px-6 text-center">Quantity</th>
-                        <th class="py-3 px-6 text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-600 text-sm">
-                    @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
-                        ->where('delivered', 1)
-                        ->where('payment', 'Paid')
-                        ->with('product')
-                        ->orderBy('sale_date', 'desc')
-                        ->get() as $sale)
-                        <tr class="border-b border-gray-200">
-                            <td class="py-3 px-6 text-center">{{ $sale->invoice_no }}</td>
-                            <td class="py-3 px-6 text-center">{{ $sale->sale_date }}</td>
-                            <td class="py-3 px-6 text-center">
-                                {{ $sale->product->item_name ?? 'N/A' }}
-                                <span class="text-gray-500 text-xs">{{ $sale->product->brand ?? '' }}</span>
-                            </td>
-                            <td class="py-3 px-6 text-center">{{ $sale->product->product_serial_number ?? 'N/A' }}</td>
-                            <td class="py-3 px-6 text-center">{{ number_format($sale->total_mmk, 2) }}</td>
-                            <td class="py-3 px-6 text-center">{{ $sale->quantity }}</td>
-                            <td class="py-3 px-6 text-center">
-                                <button type="button"
-                                        onclick="showInvoiceDetails('{{ $sale->id }}', '{{ $sale->invoice_no }}')"
-                                        data-product-id="{{ $sale->product->id }}"
-                                        @if(App\Models\Complaint::where('invoice_no', $sale->invoice_no)
-                                            ->where('product_id', $sale->product->id)
-                                            ->exists())
-                                            disabled
-                                            class="bg-gray-400 cursor-not-allowed text-white font-bold py-1 px-4 rounded-lg"
-                                            title="Complaint already submitted"
-                                        @else
-                                            class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-4 rounded-lg transition duration-300"
-                                        @endif>
-                                    {{ App\Models\Complaint::where('invoice_no', $sale->invoice_no)
-                                        ->where('product_id', $sale->product->id)
-                                        ->exists() ? 'Complaint Submitted' : 'Submit Complaint' }}
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                <!-- Completed Orders Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-50 text-green-600">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h2 class="text-sm font-medium text-gray-600">Completed Orders</h2>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {{ App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
+                                    ->where('delivered', 1)
+                                    ->count() }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Points Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-50 text-yellow-600">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h2 class="text-sm font-medium text-gray-600">Available Points</h2>
+                            <p class="text-2xl font-bold text-gray-900">{{ number_format(Auth::user()->points) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Orders Section -->
+            <div class="bg-white rounded-xl shadow-sm mb-8">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-xl font-semibold text-gray-800">📊 Pending Orders</h2>
+                    <p class="text-sm text-gray-500 mt-1">Orders awaiting delivery or payment</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial No</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
+                                ->where('delivered', 0)
+                                ->with('product')
+                                ->orderBy('sale_date', 'desc')
+                                ->get() as $sale)
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ $sale->invoice_no }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">{{ $sale->product->item_name ?? 'N/A' }}</div>
+                                        <div class="text-sm text-gray-500">{{ $sale->product->brand ?? '' }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $sale->product->product_serial_number ?? 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ number_format($sale->total_mmk) }} MMK
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $sale->quantity }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            {{ $sale->payment === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                            {{ $sale->payment }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            {{ $sale->delivered ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                            {{ $sale->delivered ? 'Delivered' : 'Pending' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <form action="{{ route('sales.cancel', $sale->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" 
+                                                onclick="return confirm('{{ $sale->payment === 'Paid' 
+                                                    ? 'Are you sure you want to cancel this paid order? The amount will be refunded as points.'
+                                                    : 'Are you sure you want to cancel this order?' }}')"
+                                                class="text-red-600 hover:text-red-900 font-medium">
+                                                Cancel Order
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Completed Orders Section -->
+            <div class="bg-white rounded-xl shadow-sm">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-xl font-semibold text-gray-800">📦 Completed Orders</h2>
+                    <p class="text-sm text-gray-500 mt-1">Successfully delivered orders</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial No</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
+                                ->where('delivered', 1)
+                                ->where('payment', 'Paid')
+                                ->with('product')
+                                ->orderBy('sale_date', 'desc')
+                                ->get() as $sale)
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ $sale->invoice_no }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">{{ $sale->product->item_name ?? 'N/A' }}</div>
+                                        <div class="text-sm text-gray-500">{{ $sale->product->brand ?? '' }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $sale->product->product_serial_number ?? 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ number_format($sale->total_mmk) }} MMK
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $sale->quantity }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button type="button"
+                                                onclick="showInvoiceDetails('{{ $sale->id }}', '{{ $sale->invoice_no }}')"
+                                                data-product-id="{{ $sale->product->id }}"
+                                                @if(App\Models\Complaint::where('invoice_no', $sale->invoice_no)
+                                                    ->where('product_id', $sale->product->id)
+                                                    ->exists())
+                                                    disabled
+                                                    class="text-gray-400 cursor-not-allowed"
+                                                    title="Complaint already submitted"
+                                                @else
+                                                    class="text-yellow-600 hover:text-yellow-900 font-medium"
+                                                @endif>
+                                            {{ App\Models\Complaint::where('invoice_no', $sale->invoice_no)
+                                                ->where('product_id', $sale->product->id)
+                                                ->exists() ? 'Complaint Submitted' : 'Submit Complaint' }}
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
