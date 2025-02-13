@@ -64,7 +64,7 @@
                             <h2 class="text-sm font-medium text-gray-600">Pending Orders</h2>
                             <p class="text-2xl font-bold text-gray-900">
                                 {{ App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
-                                    ->where('delivered', 0)
+                                    ->where('completed', 0)
                                     ->count() }}
                             </p>
                         </div>
@@ -83,7 +83,9 @@
                             <h2 class="text-sm font-medium text-gray-600">Completed Orders</h2>
                             <p class="text-2xl font-bold text-gray-900">
                                 {{ App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
+                                    ->where('completed', 1)
                                     ->where('delivered', 1)
+                                    ->where('payment', 'Paid')
                                     ->count() }}
                             </p>
                         </div>
@@ -112,76 +114,84 @@
                     <h2 class="text-xl font-semibold text-gray-800">📊 Pending Orders</h2>
                     <p class="text-sm text-gray-500 mt-1">Orders awaiting delivery or payment</p>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial No</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
-                                ->where('delivered', 0)
-                                ->with('product')
-                                ->orderBy('sale_date', 'desc')
-                                ->get() as $sale)
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {{ $sale->invoice_no }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">{{ $sale->product->item_name ?? 'N/A' }}</div>
-                                        <div class="text-sm text-gray-500">{{ $sale->product->brand ?? '' }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $sale->product->product_serial_number ?? 'N/A' }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ number_format($sale->total_mmk) }} MMK
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $sale->quantity }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            {{ $sale->payment === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                            {{ $sale->payment }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            {{ $sale->delivered ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                            {{ $sale->delivered ? 'Delivered' : 'Pending' }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <form action="{{ route('sales.cancel', $sale->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="submit" 
-                                                onclick="return confirm('{{ $sale->payment === 'Paid' 
-                                                    ? 'Are you sure you want to cancel this paid order? The amount will be refunded as points.'
-                                                    : 'Are you sure you want to cancel this order?' }}')"
-                                                class="text-red-600 hover:text-red-900 font-medium">
-                                                Cancel Order
-                                            </button>
-                                        </form>
-                                    </td>
+                <!-- Add a container with fixed height and overflow -->
+                <div class="max-h-[500px] overflow-y-auto">
+                    <!-- Add horizontal scroll wrapper -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50 sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial No</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
+                                    ->where('completed', 0)
+                                    ->with('product')
+                                    ->orderBy('sale_date', 'desc')
+                                    ->get() as $sale)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ $sale->invoice_no }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">{{ $sale->product->item_name ?? 'N/A' }}</div>
+                                            <div class="text-sm text-gray-500">{{ $sale->product->brand ?? '' }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $sale->product->product_serial_number ?? 'N/A' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ number_format($sale->total_mmk) }} MMK
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $sale->quantity }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                {{ $sale->payment === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                {{ $sale->payment }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                {{ $sale->delivered ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                {{ $sale->delivered ? 'On the Way' : 'Processing In Warehouse' }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            @if(!$sale->delivered)
+                                                <form action="{{ route('sales.cancel', $sale->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" 
+                                                        onclick="return confirm('{{ $sale->payment === 'Paid' 
+                                                            ? 'Are you sure you want to cancel this paid order? The amount will be refunded as points.'
+                                                            : 'Are you sure you want to cancel this order?' }}')"
+                                                        class="text-red-600 hover:text-red-900 font-medium">
+                                                        Cancel Order
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <span class="text-gray-400">Cannot Cancel</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -206,6 +216,7 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
+                                ->where('completed', 1)
                                 ->where('delivered', 1)
                                 ->where('payment', 'Paid')
                                 ->with('product')

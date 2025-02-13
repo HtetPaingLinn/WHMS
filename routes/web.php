@@ -56,9 +56,22 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/products/filter', function (Request $request) {
     $category = $request->query('category');
 
-    $products = $category === 'all'
-        ? Product::all()
-        : Product::where('category', $category)->get();
+    $query = Product::whereIn('id', function($query) {
+        $query->select('product_id')
+            ->from('stock_records as sr1')
+            ->whereRaw('sr1.record_date = (
+                SELECT MAX(record_date) 
+                FROM stock_records as sr2 
+                WHERE sr2.product_id = sr1.product_id
+            )')
+            ->where('closing_balance', '>', 0);
+    });
+
+    if ($category !== 'all') {
+        $query->where('category', $category);
+    }
+
+    $products = $query->get();
 
     return response()->json(['products' => $products]);
 });
