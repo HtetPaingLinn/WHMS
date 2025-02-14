@@ -93,4 +93,35 @@ class SaleController extends Controller
 
         return view('adm_dashboard', compact('salesData'));
     }
+
+    public function toggleDelivery($id)
+{
+    try {
+        $sale = DB::table('sales_invoices')->where('id', $id)->first();
+        
+        if (!$sale) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sale not found'
+            ], 404);
+        }
+
+        // Toggle the delivered status
+        $newStatus = $sale->delivered == 0 ? 1 : 0;
+        
+        DB::table('sales_invoices')
+            ->where('id', $id)
+            ->update(['delivered' => $newStatus]);
+
+        return response()->json([
+            'success' => true,
+            'delivered' => $newStatus
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error updating delivery status'
+        ], 500);
+    }
+}
 }

@@ -125,84 +125,84 @@
                     <span class="sr-only">Search</span>
                 </button>
 
-                <div class="hs-dropdown relative inline-flex">
-                    <button id="notification-dropdown" type="button" class="relative inline-flex items-center text-gray-600 hover:text-gray-700 p-2">
-                        <i class="fa-regular fa-bell text-xl"></i>
-                        @php
-                            $currentDate = '2024-12-31';
-                            $lowStockCount = DB::table('stock_records as sr1')
-                                ->whereNotExists(function($query) {
-                                    $query->from('stock_records as sr2')
-                                        ->whereRaw('sr1.product_id = sr2.product_id')
-                                        ->whereRaw('sr1.record_date < sr2.record_date');
-                                })
-                                ->where('sr1.record_date', '<=', $currentDate)
-                                ->where('sr1.closing_balance', '<', 2)
-                                ->count();
-                        @endphp
-                        @if($lowStockCount > 0)
-                            <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
-                                {{ $lowStockCount }}
-                            </span>
-                        @endif
-                    </button>
+{{--                <div class="hs-dropdown relative inline-flex">--}}
+{{--                    <button id="notification-dropdown" type="button" class="relative inline-flex items-center text-gray-600 hover:text-gray-700 p-2">--}}
+{{--                        <i class="fa-regular fa-bell text-xl"></i>--}}
+{{--                        @php--}}
+{{--                            $currentDate = '2024-12-31';--}}
+{{--                            $lowStockCount = DB::table('stock_records as sr1')--}}
+{{--                                ->whereNotExists(function($query) {--}}
+{{--                                    $query->from('stock_records as sr2')--}}
+{{--                                        ->whereRaw('sr1.product_id = sr2.product_id')--}}
+{{--                                        ->whereRaw('sr1.record_date < sr2.record_date');--}}
+{{--                                })--}}
+{{--                                ->where('sr1.record_date', '<=', $currentDate)--}}
+{{--                                ->where('sr1.closing_balance', '<', 2)--}}
+{{--                                ->count();--}}
+{{--                        @endphp--}}
+{{--                        @if($lowStockCount > 0)--}}
+{{--                            <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">--}}
+{{--                                {{ $lowStockCount }}--}}
+{{--                            </span>--}}
+{{--                        @endif--}}
+{{--                    </button>--}}
 
-                    <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-[350px] bg-white shadow-md rounded-lg mt-2" aria-labelledby="notification-dropdown">
-                        <div class="p-4 border-b border-gray-200">
-                            <h3 class="font-semibold text-gray-800">Notifications</h3>
-                        </div>
+{{--                    <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-[350px] bg-white shadow-md rounded-lg mt-2" aria-labelledby="notification-dropdown">--}}
+{{--                        <div class="p-4 border-b border-gray-200">--}}
+{{--                            <h3 class="font-semibold text-gray-800">Notifications</h3>--}}
+{{--                        </div>--}}
 
-                        <div class="max-h-[350px] overflow-y-auto">
-                            @php
-                                $lowStockItems = StockRecord::with('product')
-                                    ->select('stock_records.*')
-                                    ->join(DB::raw('(
-                                        SELECT product_id, MAX(record_date) as latest_date
-                                        FROM stock_records
-                                        WHERE record_date <= ?
-                                        GROUP BY product_id
-                                    ) latest_records'), function($join) {
-                                        $join->on('stock_records.product_id', '=', 'latest_records.product_id')
-                                         ->on('stock_records.record_date', '=', 'latest_records.latest_date');
-                                    })
-                                    ->where('closing_balance', '<', 2)
-                                    ->setBindings([$currentDate])
-                                    ->get();
-                            @endphp
+{{--                        <div class="max-h-[350px] overflow-y-auto">--}}
+{{--                            @php--}}
+{{--                                $lowStockItems = StockRecord::with('product')--}}
+{{--                                    ->select('stock_records.*')--}}
+{{--                                    ->join(DB::raw('(--}}
+{{--                                        SELECT product_id, MAX(record_date) as latest_date--}}
+{{--                                        FROM stock_records--}}
+{{--                                        WHERE record_date <= ?--}}
+{{--                                        GROUP BY product_id--}}
+{{--                                    ) latest_records'), function($join) {--}}
+{{--                                        $join->on('stock_records.product_id', '=', 'latest_records.product_id')--}}
+{{--                                         ->on('stock_records.record_date', '=', 'latest_records.latest_date');--}}
+{{--                                    })--}}
+{{--                                    ->where('closing_balance', '<', 2)--}}
+{{--                                    ->setBindings([$currentDate])--}}
+{{--                                    ->get();--}}
+{{--                            @endphp--}}
 
-                            @forelse($lowStockItems as $item)
-                                <div class="p-4 border-b border-gray-200">
-                                    <div class="flex items-start gap-x-3">
-                                        <i class="fa-regular fa-triangle-exclamation text-red-500 mt-1"></i>
-                                        <div class="flex-1">
-                                            <h4 class="text-sm font-semibold text-red-700">Low Stock Alert</h4>
-                                            <p class="text-sm text-gray-600 mt-1">
-                                                Item "{{ $item->product->name }}" is running low ({{ $item->closing_balance }} remaining)
-                                            </p>
-                                            <a href="{{ route('inventory.show') }}"
-                                               class="mt-2 inline-flex items-center gap-x-1 text-sm font-semibold text-red-600 hover:text-red-700">
-                                                Manage Stock
-                                                <i class="fa-regular fa-arrow-right text-sm"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="p-4 text-center text-gray-500">
-                                    No new notifications
-                                </div>
-                            @endforelse
-                        </div>
+{{--                            @forelse($lowStockItems as $item)--}}
+{{--                                <div class="p-4 border-b border-gray-200">--}}
+{{--                                    <div class="flex items-start gap-x-3">--}}
+{{--                                        <i class="fa-regular fa-triangle-exclamation text-red-500 mt-1"></i>--}}
+{{--                                        <div class="flex-1">--}}
+{{--                                            <h4 class="text-sm font-semibold text-red-700">Low Stock Alert</h4>--}}
+{{--                                            <p class="text-sm text-gray-600 mt-1">--}}
+{{--                                                Item "{{ $item->product->name }}" is running low ({{ $item->closing_balance }} remaining)--}}
+{{--                                            </p>--}}
+{{--                                            <a href="{{ route('inventory.show') }}"--}}
+{{--                                               class="mt-2 inline-flex items-center gap-x-1 text-sm font-semibold text-red-600 hover:text-red-700">--}}
+{{--                                                Manage Stock--}}
+{{--                                                <i class="fa-regular fa-arrow-right text-sm"></i>--}}
+{{--                                            </a>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            @empty--}}
+{{--                                <div class="p-4 text-center text-gray-500">--}}
+{{--                                    No new notifications--}}
+{{--                                </div>--}}
+{{--                            @endforelse--}}
+{{--                        </div>--}}
 
-                        @if($lowStockCount > 0)
-                            <div class="p-4 border-t border-gray-200">
-                                <a href="{{ route('system.notification') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                                    View All Notifications
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                </div>
+{{--                        @if($lowStockCount > 0)--}}
+{{--                            <div class="p-4 border-t border-gray-200">--}}
+{{--                                <a href="{{ route('system.notification') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">--}}
+{{--                                    View All Notifications--}}
+{{--                                </a>--}}
+{{--                            </div>--}}
+{{--                        @endif--}}
+{{--                    </div>--}}
+{{--                </div>--}}
 
                 <div class="flex flex-col items-end mr-40">
                     <span class="text-sm font-medium text-gray-800">Hey, Admin!</span>
@@ -355,7 +355,7 @@
                     <li class="hs-accordion" id="account-accordion">
                         <a href="/track_deliveries" class="{{ request() -> is("track_deliveries") ? "bg-blue-50 text-blue-700 focus:outline-none focus:bg-customTeal font-semibold" :  "text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-customTeal"}} hs-accordion-toggle w-full text-start flex items-center gap-x-4 py-2 px-2.5 text-sm rounded-lg" aria-expanded="true" aria-controls="users-accordion-child">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                             </svg>
                             Track Deliveries
                         </a>

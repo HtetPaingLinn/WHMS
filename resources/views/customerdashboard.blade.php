@@ -180,13 +180,14 @@ $products = Product::whereIn('id', function($query) {
                 <div class="flex flex-col justify-between">
                     <div>
                         <h3 id="modal-product-name" class="text-2xl font-bold text-gray-900"></h3>
-                        <p id="modal-product-description" class="mt-2 text-sm text-gray-600"></p>
 
                         <div class="mt-3 space-y-2 text-gray-700 text-sm">
                             <p><strong>Brand:</strong> <span id="modal-product-brand"></span></p>
                             <p><strong>Category:</strong> <span id="modal-product-category"></span></p>
                             <p><strong>Serial Number:</strong> <span id="modal-product-serial"></span></p>
                             <p><strong>Stock:</strong> <span id="modal-product-stock"></span></p>
+
+                            <p id="modal-product-description" class="mt-2 text-sm text-gray-600"></p>
                         </div>
                     </div>
 
@@ -242,7 +243,7 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute
                             data.products.forEach(product => {
                                 let productHTML = `
                             <div class="group block transform transition duration-300 hover:scale-105">
-                                <img src="${product.product_image_url}" alt="${product.item_name}" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8">
+                                <img src={{ asset('storage/' . $product -> product_image_url) }} alt="${product.item_name}" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8">
                                 <h3 class="mt-4 text-sm text-gray-700">${product.item_name}</h3>
                                 <p class="text-sm text-gray-500">${product.brand}</p>
                                 <p class="mt-1 text-lg font-medium text-gray-900">${new Intl.NumberFormat().format(product.unit_price_mmk)} MMK</p>
@@ -371,7 +372,7 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute
                     const cartItemHTML = `
             <li class="flex py-6">
                 <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                    <img src="${item.image}" alt="${item.name}" class="h-full w-full object-cover object-center">
+                    <img src={{ asset('storage/' . $product -> product_image_url) }} alt="${item.name}" class="h-full w-full object-cover object-center">
                 </div>
                 <div class="ml-4 flex flex-1 flex-col">
                     <div>

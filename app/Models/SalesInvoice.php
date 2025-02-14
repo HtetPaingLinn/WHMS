@@ -26,7 +26,7 @@ class SalesInvoice extends Model
 
     public function partnerShop()
     {
-        return $this->belongsTo(PartnerShop::class, 'partner_shops_id');
+        return $this->belongsTo(PartnerShop::class, 'partner_shops_id', 'partner_shops_id');
     }
 
     public function product()

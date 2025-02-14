@@ -1,4 +1,5 @@
 <x-adm-dsh-nav>
+<meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="bg-white rounded-xl shadow-lg p-8 w-full">
         <div class="text-lg font-semibold text-left rtl:text-right text-gray-900">
             Sales Dashboard
@@ -69,12 +70,14 @@
                             <td class="py-3 px-6 text-right">{{ $sale->quantity }}</td>
                             <td class="py-3 px-6 text-center">{{ $sale->payment }}</td>
                             <td class="py-3 px-6 text-center">
-                                @if($sale->delivered == 0)
-                                    <span class="text-red-700 font-bold">Not Delivered</span>
-                                @else
-                                    <span class="text-green-700 font-bold">Delivered</span>
-                                @endif
-                            </td>
+    <button onclick="toggleDeliveryStatus('{{ $sale->id }}', this)" 
+            class="px-4 py-2 rounded-lg font-semibold transition-all duration-300 
+            {{ $sale->delivered == 0 
+                ? 'bg-red-100 text-red-700' 
+                : 'bg-green-100 hover:bg-green-200 text-green-700' }}">
+        {{ $sale->delivered == 0 ? 'Not Delivered' : 'Delivered' }}
+    </button>
+</td>
                             <td class="py-3 px-6 text-center">
                                 <button type="button" onclick="showInvoiceDetails('{{ $sale->invoice_no }}')" class="bg-green-500 hover:bg-green-700 text-white font-semibold py-1 px-4 rounded-lg transition duration-300">
                                     View Details
@@ -100,6 +103,40 @@
             </div>
         </div>
     </div>
+
+    <script>
+function toggleDeliveryStatus(saleId, button) {
+    fetch(`/sales/${saleId}/toggle-delivery`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update button appearance
+            if (data.delivered) {
+                button.classList.remove('bg-red-100', 'hover:bg-red-200', 'text-red-700');
+                button.classList.add('bg-green-100', 'hover:bg-green-200', 'text-green-700');
+                button.textContent = 'Delivered';
+            } else {
+                button.classList.remove('bg-green-100', 'hover:bg-green-200', 'text-green-700');
+                button.classList.add('bg-red-100', 'hover:bg-red-200', 'text-red-700');
+                button.textContent = 'Not Delivered';
+            }
+        } else {
+            alert('Error updating delivery status');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating delivery status');
+    });
+}
+</script>
+
 </x-adm-dsh-nav>
 
 <!-- JavaScript to handle AJAX and Modal -->

@@ -4,6 +4,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\DailyDeliveryListController;
 use App\Http\Controllers\DeliveryAuthController;
+use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\PointsController;
@@ -63,7 +64,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-
+    Route::get('/customer_message', function () {
+        return view('customer_message');
+    });
 });
 
 Route::get('/products/filter', function (Request $request) {
@@ -182,10 +185,7 @@ Route::post('del-logout', [DeliveryAuthController::class, 'logout'])->name('driv
 
 // Delivery Man Pages
 
-Route::get('/del-dsh', [DailyDeliveryListController::class, 'index'])->name('del-dsh');
-Route::post('/up-del', [DailyDeliveryListController::class, 'updateDeliveryStatus'])->name('updateDel');
-Route::get('/delivery/messages', [DailyDeliveryListController::class, 'messages'])->name('delivery.messages');
-
+Route::post('/delivery/{id}/complete', [DeliveryController::class, 'markAsComplete'])->name('delivery.complete');
 
 // Define a route for fetching the stock data
 
@@ -209,6 +209,7 @@ Route::get('/track_deliveries', function () {
     return view('track_deliveries');
 });
 
-Route::get('/customer_message', function () {
-    return view('customer_message');
-});
+
+
+Route::post('/sales/{sale}/toggle-delivery', [SaleController::class, 'toggleDelivery'])
+    ->name('sales.toggle-delivery');

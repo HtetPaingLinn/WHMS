@@ -187,6 +187,14 @@ $products = Product::all();
 
                             Order List
                         </a></li>
+
+                    <li><a class="{{ request() -> is("customer_message") ? "bg-blue-50 text-blue-700 focus:outline-none focus:bg-customTeal font-semibold" :  "text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-customTeal"}} hs-accordion-toggle w-full text-start flex items-center gap-x-4 py-2 px-2.5 text-sm rounded-lg" aria-expanded="true" aria-controls="users-accordion-child" href="/customer_message">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                            </svg>
+
+                            Delivery Messages
+                        </a></li>
                     <li><a class="{{ request() -> is("customerhistory") ? "bg-blue-50 text-blue-700 focus:outline-none focus:bg-customTeal font-semibold" :  "text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-customTeal"}} hs-accordion-toggle w-full text-start flex items-center gap-x-4 py-2 px-2.5 text-sm rounded-lg" aria-expanded="true" aria-controls="users-accordion-child" href="/customerhistory">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605" />
