@@ -9,8 +9,8 @@ $products = Product::whereIn('id', function($query) {
     $query->select('product_id')
         ->from('stock_records as sr1')
         ->whereRaw('sr1.record_date = (
-            SELECT MAX(record_date) 
-            FROM stock_records as sr2 
+            SELECT MAX(record_date)
+            FROM stock_records as sr2
             WHERE sr2.product_id = sr1.product_id
         )')
         ->where('closing_balance', '>', 0);
@@ -140,7 +140,7 @@ $products = Product::whereIn('id', function($query) {
                 <div id="product-grid" class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                     <?php foreach ($products as $product): ?>
                     <div class="group block transform transition duration-300 hover:scale-105">
-                        <img src="<?= htmlspecialchars($product->getImageUrlAttribute()) ?>" alt="<?= htmlspecialchars($product->item_name) ?>" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8">
+                        <img src="{{ asset('storage/' . $product -> product_image_url) }}" alt="<?= htmlspecialchars($product->item_name) ?>" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8">
                         <h3 class="mt-4 text-sm text-gray-700"><?= htmlspecialchars($product->item_name) ?></h3>
                         <p class="text-sm text-gray-500"><?= htmlspecialchars($product->brand) ?></p>
                         <p class="mt-1 text-lg font-medium text-gray-900"><?= number_format($product->unit_price_mmk) ?> MMK</p>
@@ -211,108 +211,6 @@ $products = Product::whereIn('id', function($query) {
         </div>
     </div>
 
-    <!-- Testimonials -->
-    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-        <!-- Grid -->
-        <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 md:gap-20 md:grid-cols-3 lg:grid-cols-4 lg:gap-8">
-            <!-- Testimonial Block 1 -->
-            <div class="text-center">
-                <div class="flex justify-center">
-                    <img class="size-20 rounded-full" src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" alt="Customer">
-                </div>
-
-                <div class="mt-2 sm:mt-6">
-                    <p class="text-gray-800 dark:text-neutral-200">
-                        "The inventory tracking system has transformed how we manage our stock. Real-time updates and automated reordering have saved us countless hours."
-                    </p>
-                </div>
-
-                <div class="mt-3">
-                    <p class="font-medium text-gray-800 dark:text-neutral-200">Michael Chen</p>
-                    <p class="text-sm text-gray-600 dark:text-neutral-400">Warehouse Manager</p>
-                </div>
-            </div>
-            <!-- End Testimonial Block 1 -->
-
-            <!-- Testimonial Block 2 -->
-            <div class="text-center">
-                <div class="flex justify-center">
-                    <img class="size-20 rounded-full" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" alt="Customer">
-                </div>
-
-                <div class="mt-2 sm:mt-6">
-                    <p class="text-gray-800 dark:text-neutral-200">
-                        "The order tracking feature gives our customers complete transparency. They always know where their products are in the delivery process."
-                    </p>
-                </div>
-
-                <div class="mt-3">
-                    <p class="font-medium text-gray-800 dark:text-neutral-200">Sarah Johnson</p>
-                    <p class="text-sm text-gray-600 dark:text-neutral-400">E-commerce Director</p>
-                </div>
-            </div>
-            <!-- End Testimonial Block 2 -->
-
-            <!-- Testimonial Block 3 -->
-            <div class="text-center">
-                <div class="flex justify-center">
-                    <img class="size-20 rounded-full" src="https://images.unsplash.com/photo-1579017331263-ef82f0bbc748?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" alt="Customer">
-                </div>
-
-                <div class="mt-2 sm:mt-6">
-                    <p class="text-gray-800 dark:text-neutral-200">
-                        "Integration with our accounting system has streamlined our financial reporting. The automated point system for loyal customers is brilliant."
-                    </p>
-                </div>
-
-                <div class="mt-3">
-                    <p class="font-medium text-gray-800 dark:text-neutral-200">David Martinez</p>
-                    <p class="text-sm text-gray-600 dark:text-neutral-400">Finance Manager</p>
-                </div>
-            </div>
-            <!-- End Testimonial Block 3 -->
-
-            <!-- Testimonial Block 4 -->
-            <div class="text-center">
-                <div class="flex justify-center">
-                    <img class="size-20 rounded-full" src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" alt="Customer">
-                </div>
-
-                <div class="mt-2 sm:mt-6">
-                    <p class="text-gray-800 dark:text-neutral-200">
-                        "The analytics dashboard helps us make data-driven decisions. We've increased our inventory turnover by 40% since implementing this system."
-                    </p>
-                </div>
-
-                <div class="mt-3">
-                    <p class="font-medium text-gray-800 dark:text-neutral-200">Emily Wong</p>
-                    <p class="text-sm text-gray-600 dark:text-neutral-400">Operations Director</p>
-                </div>
-            </div>
-            <!-- End Testimonial Block 4 -->
-        </div>
-        <!-- End Grid -->
-
-        <!-- Rating Summary -->
-        <div class="mt-10 text-center">
-            <div class="flex justify-center items-center gap-x-1 mb-3">
-                <!-- Star Rating -->
-                <div class="flex gap-x-1">
-                    @for ($i = 0; $i < 5; $i++)
-                    <svg class="size-5 text-yellow-400" width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M27.0352 1.6307L33.9181 16.3633C34.2173 16.6768 34.5166 16.9903 34.8158 16.9903L50.0779 19.1845C50.9757 19.1845 51.275 20.4383 50.6764 21.0652L39.604 32.3498C39.3047 32.6632 39.3047 32.9767 39.3047 33.2901L41.998 49.2766C42.2973 50.217 41.1002 50.8439 40.5017 50.5304L26.4367 43.3208C26.1375 43.3208 25.8382 43.3208 25.539 43.3208L11.7732 50.8439C10.8754 51.1573 9.97763 50.5304 10.2769 49.59L12.9702 33.6036C12.9702 33.2901 12.9702 32.9767 12.671 32.6632L1.29923 21.0652C0.700724 20.4383 0.999979 19.4979 1.89775 19.4979L17.1598 17.3037C17.459 17.3037 17.7583 16.9903 18.0575 16.6768L24.9404 1.6307C25.539 0.69032 26.736 0.69032 27.0352 1.6307Z" fill="currentColor"/>
-                    </svg>
-                    @endfor
-                </div>
-                <!-- End Star Rating -->
-            </div>
-
-            <p class="text-gray-800 dark:text-neutral-200">Trusted by 5,000+ businesses worldwide</p>
-            <p class="text-sm text-gray-600 dark:text-neutral-400">Average customer rating: 4.9/5</p>
-        </div>
-        <!-- End Rating Summary -->
-    </div>
-    <!-- End Testimonials -->
 
     <script>
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -696,14 +594,14 @@ function processCheckout(usePoints) {
             cart = [];
             updateCartUI();
             closeModal();
-            
+
             // Update displayed points
             const pointsDisplay = document.getElementById('user-points');
             const currentPoints = parseInt(pointsDisplay.getAttribute('data-points'));
-            const newPoints = usePoints ? 
-                currentPoints - calculateTotal() : 
+            const newPoints = usePoints ?
+                currentPoints - calculateTotal() :
                 currentPoints + (data.points_earned || 0);
-            
+
             pointsDisplay.setAttribute('data-points', newPoints);
             pointsDisplay.textContent = `Your Points: ${newPoints}`;
         } else {

@@ -1,0 +1,271 @@
+{
+    "reports": [
+        {
+            "lat": 16.833772777555968,
+            "lng": 96.21259689331056,
+            "township": "Thingan Kyun",
+            "description": "Infinity Tech Store",
+            "status": "pending",
+            "invoice_num": 7126,
+            "id": 1
+        },
+        {
+            "lat": 16.843395077873474,
+            "lng": 96.15663528442384,
+            "township": "Yankin",
+            "description": "Cloud Connectors",
+            "status": "pending",
+            "invoice_num": 7128,
+            "id": 2
+        },
+        {
+            "lat": 16.818910255735205,
+            "lng": 96.165733338301920,
+            "description": "SmartEdge Solutions",
+            "township": "Bahan",
+            "status": "pending",
+            "invoice_num": 7142,
+            "id": 3
+        },
+        {
+            "lat": 16.818980255735205,
+            "lng": 96.16573333740236,
+            "description": "Mega Tech Mart\n",
+            "township": "Bahan",
+            "status": "pending",
+            "invoice_num": 7136,
+            "id": 4
+        },
+        {
+            "lat": 16.848397645843654,
+            "lng": 96.09277725219728,
+            "description": "The Data Den",
+            "township": "Hlaing Thar Yar",
+            "status": "pending",
+            "invoice_num": 7129,
+            "id": 5
+        },
+        {
+            "lat": 16.795841,
+            "lng": 96.159470,
+            "description": "Innovate IT",
+            "township": "Bahan",
+            "status": "pending",
+            "invoice_num": 7130,
+            "id": 6
+        },
+        {
+            "lat": 16.827150,
+            "lng": 96.127825,
+            "description": "DigitalHub",
+            "township": "Kamaryut",
+            "status": "pending",
+            "invoice_num": 7143,
+            "id": 7
+        },
+        {
+            "lat": 16.855897,
+            "lng": 96.175512,
+            "description": "Tech Fusion Store",
+            "township": "South Okkalapa",
+            "status": "pending",
+            "invoice_num": 7131,
+            "id": 8
+        },
+        {
+            "lat": 16.774831,
+            "lng": 96.150811,
+            "description": "Code&Pixel",
+            "township": "Latha",
+            "status": "pending",
+            "invoice_num": 7127,
+            "id": 9
+        },
+        {
+            "lat": 16.887091,
+            "lng": 96.199270,
+            "description": "Binary Boutique",
+            "township": "North Dagon",
+            "status": "pending",
+            "invoice_num": 7133,
+            "id": 10
+        },
+        {
+            "lat": 16.807927,
+            "lng": 96.189657,
+            "description": "NextGen Gadgets",
+            "township": "Tarmwe",
+            "status": "pending",
+            "invoice_num": 7144,
+            "id": 11
+        },
+        {
+            "lat": 16.866069,
+            "lng": 96.163564,
+            "description": "Circuit City Pro",
+            "township": "South Okkalapa",
+            "status": "pending",
+            "invoice_num": 7134,
+            "id": 12
+        },
+        {
+            "lat": 16.784563,
+            "lng": 96.172147,
+            "description": "GigaWorld Electronics",
+            "township": "Mingalar Taung Nyunt",
+            "status": "pending",
+            "invoice_num": 7135,
+            "id": 13
+        },
+        {
+            "lat": 16.828671,
+            "lng": 96.141891,
+            "description": "CyberCore",
+            "township": "Hlaing",
+            "status": "pending",
+            "invoice_num": 7137,
+            "id": 14
+        },
+        {
+            "lat": 16.851123,
+            "lng": 96.214174,
+            "description": "Hardware Haven",
+            "township": "South Dagon",
+            "status": "pending",
+            "invoice_num": 7132,
+            "id": 15
+        },
+        {
+            "lat": 16.838772,
+            "lng": 96.132584,
+            "description": "PC Planet",
+            "township": "Hlaing",
+            "status": "pending",
+            "invoice_num": 7138,
+            "id": 16
+        },
+        {
+            "lat": 16.775531,
+            "lng": 96.161753,
+            "description": "Byte Bazaar",
+            "township": "Kyauktada",
+            "status": "pending",
+            "invoice_num": 7139,
+            "id": 17
+        },
+        {
+            "lat": 16.897241,
+            "lng": 96.199521,
+            "description": "Future Bytes",
+            "township": "East Dagon",
+            "status": "pending",
+            "invoice_num": 7140,
+            "id": 18
+        },
+        {
+            "lat": 16.816952,
+            "lng": 96.129873,
+            "description": "IT Essentials Co.",
+            "township": "Kamaryut",
+            "status": "pending",
+            "invoice_num": 7141,
+            "id": 19
+        },
+        {
+            "lat": 16.846123,
+            "lng": 96.192456,
+            "description": "TechNest",
+            "township": "South Okkalapa",
+            "status": "pending",
+            "invoice_num": 7145,
+            "id": 20
+        }
+    ],
+    "shelters": [
+        {
+            "id": 1738259572793,
+            "lat": 16.854895865803815,
+            "lng": 96.13534927368165,
+            "name": "MyanTech WareHouse",
+            "contact": "280180198901"
+        }
+    ],
+    "deliveries": [
+        {
+            "id": 1,
+            "lat": 16.854525865803815,
+            "lng": 96.13534927368165,
+            "shelterId": 1738259572793,
+            "invoiceNum": [
+                7126,
+                7127,
+                7128,
+                7129
+            ],
+            "status": "on the way",
+            "shopName": [
+                "Unique",
+                "CityMart",
+                "Ocean",
+                "MK"
+            ],
+            "driverName": "Ko Tun Lin",
+            "driverContact": "09977777777"
+        },
+        {
+            "id": 2,
+            "lat": 16.854115865803815,
+            "lng": 96.13534927368165,
+            "shelterId": 1738259572793,
+            "invoiceNum": [
+                7130,
+                7131,
+                7132
+            ],
+            "status": "pending",
+            "shopName": [
+                "Infinity Tech Store",
+                "ABC Store",
+                "XYZ Electronics"
+            ],
+            "driverName": "Ko Aung Aung",
+            "driverContact": "09966666666"
+        },
+        {
+            "id": 3,
+            "lat": 16.854355865803815,
+            "lng": 96.13534927368165,
+            "shelterId": 1738259572793,
+            "invoiceNum": [
+                7133,
+                7134,
+                7135
+            ],
+            "status": "completed",
+            "shopName": [
+                "Anycall",
+                "Mobile King",
+                "Phone Valley"
+            ],
+            "driverName": "Ma Aye Aye",
+            "driverContact": "09955555555"
+        },
+        {
+            "id": 4,
+            "lat": 16.85475865803815,
+            "lng": 96.13534927368165,
+            "shelterId": 1738259572793,
+            "invoiceNum": [
+                7136,
+                7137
+            ],
+            "status": "pending",
+            "shopName": [
+                "DigitalHub",
+                "TechZone"
+            ],
+            "driverName": "U Myint Aung",
+            "driverContact": "09944444444"
+        }
+    ]
+}

@@ -39,5 +39,19 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
+
+    public function systemUserLogin(Request $request)
+    {
+        // Validate incoming request data
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
+        // Manually check credentials using the SystemUser model
+        $user = \App\Models\SystemUser::where('email', $credentials['email'])->first();
+        return redirect()->intended('adm-dsh');
+    }
+
 }
 

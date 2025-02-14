@@ -23,10 +23,6 @@ class SalesInvoice extends Model
         'remarks',
     ];
 
-    public static function create(array $array)
-    {
-
-    }
 
     public function partnerShop()
     {

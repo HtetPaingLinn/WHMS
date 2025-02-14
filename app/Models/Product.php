@@ -33,4 +33,24 @@ class Product extends Model
     {
         return $this->product_image_url;
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($product) {
+            $systemUserId = SystemUser::first()?->id ?? 1; // Get first available user, fallback to 1
+
+            StockRecord::create([
+                'record_date' => now()->toDateString(),
+                'product_id' => $product->id,
+                'warehouse_branch' => 'Dawbon',
+                'opening_balance' => 0,
+                'received' => 0,
+                'dispatched' => 0,
+                'closing_balance' => 0,
+                'system_users_id' => $systemUserId,
+            ]);
+        });
+    }
 }
