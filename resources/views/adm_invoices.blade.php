@@ -70,10 +70,10 @@
                             <td class="py-3 px-6 text-right">{{ $sale->quantity }}</td>
                             <td class="py-3 px-6 text-center">{{ $sale->payment }}</td>
                             <td class="py-3 px-6 text-center">
-    <button onclick="toggleDeliveryStatus('{{ $sale->id }}', this)" 
-            class="px-4 py-2 rounded-lg font-semibold transition-all duration-300 
-            {{ $sale->delivered == 0 
-                ? 'bg-red-100 text-red-700' 
+    <button onclick="toggleDeliveryStatus('{{ $sale->id }}', this)"
+            class="px-4 py-2 rounded-lg font-semibold transition-all duration-300
+            {{ $sale->delivered == 0
+                ? 'bg-red-100 text-red-700'
                 : 'bg-green-100 hover:bg-green-200 text-green-700' }}">
         {{ $sale->delivered == 0 ? 'Not Delivered' : 'Delivered' }}
     </button>
@@ -103,6 +103,7 @@
             </div>
         </div>
     </div>
+    <br><br><br>
 
     <script>
 function toggleDeliveryStatus(saleId, button) {

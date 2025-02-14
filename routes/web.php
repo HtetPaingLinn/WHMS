@@ -67,6 +67,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/customer_message', function () {
         return view('customer_message');
     });
+
+    Route::get('/map', function(){
+        return view('map');
+    });
 });
 
 Route::get('/products/filter', function (Request $request) {

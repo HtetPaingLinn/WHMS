@@ -12,6 +12,7 @@ class DeliveryController extends Controller
     try {
         $delivery = SalesInvoice::findOrFail($id);
         $delivery->update(['completed' => 1]);
+        $delivery->update(['payment' => 'Paid']);
 
         return response()->json([
             'success' => true,

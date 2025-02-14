@@ -120,90 +120,6 @@
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50 sticky top-0 z-10">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial No</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
-                                    ->where('completed', 0)
-                                    ->with('product')
-                                    ->orderBy('sale_date', 'desc')
-                                    ->get() as $sale)
-                                    <tr class="hover:bg-gray-50 transition-colors">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $sale->invoice_no }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-medium text-gray-900">{{ $sale->product->item_name ?? 'N/A' }}</div>
-                                            <div class="text-sm text-gray-500">{{ $sale->product->brand ?? '' }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $sale->product->product_serial_number ?? 'N/A' }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ number_format($sale->total_mmk) }} MMK
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $sale->quantity }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                {{ $sale->payment === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                                {{ $sale->payment }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                {{ $sale->delivered ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                                {{ $sale->delivered ? 'On the Way' : 'Processing In Warehouse' }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            @if(!$sale->delivered)
-                                                <form action="{{ route('sales.cancel', $sale->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button type="submit" 
-                                                        onclick="return confirm('{{ $sale->payment === 'Paid' 
-                                                            ? 'Are you sure you want to cancel this paid order? The amount will be refunded as points.'
-                                                            : 'Are you sure you want to cancel this order?' }}')"
-                                                        class="text-red-600 hover:text-red-900 font-medium">
-                                                        Cancel Order
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <span class="text-gray-400">Cannot Cancel</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Completed Orders Section -->
-            <div class="bg-white rounded-xl shadow-sm">
-                <div class="p-6 border-b border-gray-100">
-                    <h2 class="text-xl font-semibold text-gray-800">📦 Completed Orders</h2>
-                    <p class="text-sm text-gray-500 mt-1">Successfully delivered orders</p>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
@@ -211,14 +127,14 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial No</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
                             @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
-                                ->where('completed', 1)
-                                ->where('delivered', 1)
-                                ->where('payment', 'Paid')
+                                ->where('completed', 0)
                                 ->with('product')
                                 ->orderBy('sale_date', 'desc')
                                 ->get() as $sale)
@@ -242,26 +158,114 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $sale->quantity }}
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                                {{ $sale->payment === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                {{ $sale->payment }}
+                                            </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                                {{ $sale->delivered ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                {{ $sale->delivered ? 'On the Way' : 'Processing In Warehouse' }}
+                                            </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button type="button"
-                                                onclick="showInvoiceDetails('{{ $sale->id }}', '{{ $sale->invoice_no }}')"
-                                                data-product-id="{{ $sale->product->id }}"
-                                                @if(App\Models\Complaint::where('invoice_no', $sale->invoice_no)
-                                                    ->where('product_id', $sale->product->id)
-                                                    ->exists())
-                                                    disabled
-                                                    class="text-gray-400 cursor-not-allowed"
-                                                    title="Complaint already submitted"
-                                                @else
-                                                    class="text-yellow-600 hover:text-yellow-900 font-medium"
-                                                @endif>
-                                            {{ App\Models\Complaint::where('invoice_no', $sale->invoice_no)
-                                                ->where('product_id', $sale->product->id)
-                                                ->exists() ? 'Complaint Submitted' : 'Submit Complaint' }}
-                                        </button>
+                                        @if(!$sale->delivered)
+                                            <form action="{{ route('sales.cancel', $sale->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit"
+                                                        onclick="return confirm('{{ $sale->payment === 'Paid'
+                                                            ? 'Are you sure you want to cancel this paid order? The amount will be refunded as points.'
+                                                            : 'Are you sure you want to cancel this order?' }}')"
+                                                        class="text-red-600 hover:text-red-900 font-medium">
+                                                    Cancel Order
+                                                </button>
+                                            </form>
+                                        @else
+                                            <button
+                                                onclick="openTrackingModal('{{ $sale->invoice_no }}')"
+                                                class="text-blue-600 hover:text-blue-900 font-medium">
+                                                Track Delivery
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Orders Section -->
+            <div class="bg-white rounded-xl shadow-sm">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-xl font-semibold text-gray-800">📦 Completed Orders</h2>
+                    <p class="text-sm text-gray-500 mt-1">Successfully delivered orders</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial No</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach(App\Models\SalesInvoice::where('partner_shops_id', Auth::user()->partner_shops_id)
+                            ->where('completed', 1)
+                            ->where('delivered', 1)
+                            ->where('payment', 'Paid')
+                            ->with('product')
+                            ->orderBy('sale_date', 'desc')
+                            ->get() as $sale)
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    {{ $sale->invoice_no }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $sale->product->item_name ?? 'N/A' }}</div>
+                                    <div class="text-sm text-gray-500">{{ $sale->product->brand ?? '' }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $sale->product->product_serial_number ?? 'N/A' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ number_format($sale->total_mmk) }} MMK
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $sale->quantity }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button type="button"
+                                            onclick="showInvoiceDetails('{{ $sale->id }}', '{{ $sale->invoice_no }}')"
+                                            data-product-id="{{ $sale->product->id }}"
+                                            @if(App\Models\Complaint::where('invoice_no', $sale->invoice_no)
+                                                ->where('product_id', $sale->product->id)
+                                                ->exists())
+                                                disabled
+                                            class="text-gray-400 cursor-not-allowed"
+                                            title="Complaint already submitted"
+                                            @else
+                                                class="text-yellow-600 hover:text-yellow-900 font-medium"
+                                        @endif>
+                                        {{ App\Models\Complaint::where('invoice_no', $sale->invoice_no)
+                                            ->where('product_id', $sale->product->id)
+                                            ->exists() ? 'Complaint Submitted' : 'Submit Complaint' }}
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -322,7 +326,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Customer Phone</label>
-                            <input type="text" 
+                            <input type="text"
                                    name="customer_phone"
                                    required
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -344,9 +348,9 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Quantity</label>
                                     <div class="flex items-center space-x-2">
-                                        <input type="number" 
-                                               name="quantity" 
-                                               id="quantity-input" 
+                                        <input type="number"
+                                               name="quantity"
+                                               id="quantity-input"
                                                min="1"
                                                required
                                                class="mt-1 block w-32 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -356,7 +360,7 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Issue Type</label>
-                                    <select name="issue_type" 
+                                    <select name="issue_type"
                                             id="issue-type-select"
                                             required
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -368,7 +372,7 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Remarks (Optional)</label>
-                                    <textarea name="remarks" 
+                                    <textarea name="remarks"
                                               rows="3"
                                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                                 </div>
@@ -384,6 +388,34 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tracking Modal -->
+    <div id="trackingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Track Delivery</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500">
+                        Tracking delivery for Invoice #<span id="trackingInvoiceNo"></span>
+                    </p>
+                    <!-- Add more tracking details here -->
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button
+                        id="trackOnMapBtn"
+                        onclick="window.location.href='/map?invoice={{ $sale->invoice_no }}'"
+                        class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        View on Map
+                    </button>
+                    <button
+                        onclick="closeTrackingModal()"
+                        class="mt-3 px-4 py-2 bg-gray-100 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                        Close
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -429,7 +461,7 @@
             // Update the form with product details
             document.querySelector('.product-name').textContent = productName;
             document.getElementById('product_id').value = productId;
-            
+
             // Set max quantity and its display
             const quantityInput = document.getElementById('quantity-input');
             quantityInput.max = orderQuantity;
@@ -479,6 +511,32 @@
             if (event.target === this) {
                 hideComplaintForm();
             }
+        });
+
+        function openTrackingModal(invoiceNo) {
+            document.getElementById('trackingModal').classList.remove('hidden');
+            document.getElementById('trackingInvoiceNo').textContent = invoiceNo;
+
+            // Update the View on Map button's href
+            document.getElementById('trackOnMapBtn').onclick = function() {
+                window.location.href = `/map?invoice=${invoiceNo}`;
+            };
+        }
+
+        function closeTrackingModal() {
+            document.getElementById('trackingModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('trackingModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTrackingModal();
+            }
+        });
+
+        // Prevent modal close when clicking inside modal content
+        document.querySelector('#trackingModal > div').addEventListener('click', function(e) {
+            e.stopPropagation();
         });
     </script>
 </x-dashboard>

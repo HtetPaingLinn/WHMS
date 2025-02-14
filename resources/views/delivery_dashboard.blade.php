@@ -1,4 +1,4 @@
-<x-adm-dsh-nav>
+<x-drv-dsh>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white rounded-xl shadow-lg p-8">
@@ -98,14 +98,14 @@
                                     {{ number_format($delivery->total_mmk) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                         {{ $delivery->completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                         {{ $delivery->completed ? 'Completed' : 'In Progress' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     @if(!$delivery->completed)
-                                        <button onclick="markAsArrived('{{ $delivery->id }}')" 
+                                        <button onclick="markAsArrived('{{ $delivery->id }}')"
                                             class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition duration-300">
                                             Mark as Arrived
                                         </button>
@@ -146,4 +146,4 @@
             });
         }
     </script>
-</x-adm-dsh-nav>
+</x-drv-dsh>

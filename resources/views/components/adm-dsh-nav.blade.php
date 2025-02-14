@@ -55,7 +55,7 @@
 
     <link rel="stylesheet" href="https://preline.co/assets/css/main.min.css">
 
-    // Style For Footer
+
     <style>
         footer {
             width: 100%;

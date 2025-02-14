@@ -27,31 +27,35 @@ $products = Product::whereIn('id', function($query) {
                             <div class="hidden lg:block lg:self-stretch w-full">
                                 <nav class="flex items-center w-full">
                                     <!-- Category Buttons Container -->
-                                    <div class="flex gap-x-2 flex-grow">
-                                        <!-- View All Products Button -->
-                                        <button
-                                            class="category-btn -mb-px py-3 px-4 inline-flex items-center gap-2 bg-white text-sm font-medium text-blue-600 border border-b-transparent rounded-t-lg focus:outline-none dark:bg-neutral-800 dark:border-neutral-700 dark:border-b-gray-800"
-                                            data-category="all">
-                                            View All
-                                        </button>
+                                    <div class="flex gap-x-2 flex-grow overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                                        <div class="flex gap-x-2 px-1">
+                                            <!-- View All Products Button -->
+                                            <button
+                                                class="category-btn whitespace-nowrap -mb-px py-3 px-6 inline-flex items-center gap-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow-md hover:bg-blue-700 transition duration-300 focus:outline-none"
+                                                data-category="all">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+                                                </svg>
+                                                View All
+                                            </button>
 
-                                        <!-- Dynamic Category Buttons -->
-                                        <?php foreach ($categories as $category): ?>
-                                        <button
-                                            class="category-btn -mb-px py-3 px-4 inline-flex items-center gap-2 bg-gray-50 text-sm font-medium text-gray-500 border rounded-t-lg hover:text-gray-700 focus:outline-none focus:text-blue-700 dark:bg-neutral-700 dark:border-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300 dark:focus:text-neutral-300"
-                                            data-category="<?= htmlspecialchars($category->category) ?>">
+                                            <!-- Dynamic Category Buttons -->
+                                            <?php foreach ($categories as $category): ?>
+                                            <button
+                                                class="category-btn whitespace-nowrap -mb-px py-3 px-6 inline-flex items-center gap-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg shadow-md hover:bg-gray-300 transition duration-300 focus:outline-none"
+                                                data-category="<?= htmlspecialchars($category->category) ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                                                </svg>
                                                 <?= htmlspecialchars($category->category) ?>
-                                        </button>
-                                        <?php endforeach; ?>
+                                            </button>
+                                            <?php endforeach; ?>
+                                        </div>
                                     </div>
 
                                     <div class="flex flex-col items-end mr-5">
-                    <span class="text-sm font-medium text-yellow-500 flex items-center gap-1">
-                        Your Points: <?= Auth::user()->points; ?>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-yellow-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-                        </svg>
-                    </span>
+                    
                 </div>
 
                                     <!-- Shopping Cart Button -->
@@ -136,6 +140,7 @@ $products = Product::whereIn('id', function($query) {
         <div class="bg-white">
             <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                 <h2 class="sr-only">Products</h2>
+                
 
                 <div id="product-grid" class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                     <?php foreach ($products as $product): ?>

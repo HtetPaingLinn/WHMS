@@ -11,6 +11,7 @@ $products = Product::all();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @viteReactRefresh
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
 </head>
@@ -92,6 +93,14 @@ $products = Product::all();
                             <p class="text-sm text-gray-500 dark:text-neutral-500">Signed in as</p>
                             <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">{{ Auth::user()->partner_shops_email }}
                             </p>
+                        </div>
+                        <div class="p-1.5 space-y-0.5 ml-6">
+                            <span class="text-sm font-medium text-yellow-500 flex items-center gap-1">
+                                Your Points: <?= Auth::user()->points; ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-yellow-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                                </svg>
+                            </span>
                         </div>
                         <div class="p-1.5 space-y-0.5">
                             <form action="{{ route('logout') }}" method="POST" class="p-2">
@@ -188,13 +197,6 @@ $products = Product::all();
                             Order List
                         </a></li>
 
-                    <li><a class="{{ request() -> is("customer_message") ? "bg-blue-50 text-blue-700 focus:outline-none focus:bg-customTeal font-semibold" :  "text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-customTeal"}} hs-accordion-toggle w-full text-start flex items-center gap-x-4 py-2 px-2.5 text-sm rounded-lg" aria-expanded="true" aria-controls="users-accordion-child" href="/customer_message">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                            </svg>
-
-                            Delivery Messages
-                        </a></li>
                     <li><a class="{{ request() -> is("customerhistory") ? "bg-blue-50 text-blue-700 focus:outline-none focus:bg-customTeal font-semibold" :  "text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-customTeal"}} hs-accordion-toggle w-full text-start flex items-center gap-x-4 py-2 px-2.5 text-sm rounded-lg" aria-expanded="true" aria-controls="users-accordion-child" href="/customerhistory">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605" />
@@ -210,6 +212,15 @@ $products = Product::all();
 
                             Complaints
                         </a></li>
+
+                    <li>
+                        <a class="{{ request()->is('map') ? 'bg-blue-50 text-blue-700 focus:outline-none focus:bg-customTeal font-semibold' : 'text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-customTeal' }} hs-accordion-toggle w-full text-start flex items-center gap-x-4 py-2 px-2.5 text-sm rounded-lg" href="/map">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
+                            </svg>
+                            Check Delivery
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>
